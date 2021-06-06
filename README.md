@@ -9,7 +9,7 @@ Once Python is installed, install [Flask](https://flask.palletsprojects.com/en/2
 To run the application in development mode, configure Flask by entering the following commands in the application directory:
 
 ```
-export FLASK_APP=application.py
+export FLASK_APP=app.py
 export FLASK_ENV=development
 ```
 Then run either `flask run` or `python -m flask run` to start the development server.
