@@ -12,4 +12,6 @@ To run the application in development mode, configure Flask by entering the foll
 export FLASK_APP=application.py
 export FLASK_ENV=development
 ```
-Then run either `flask run` or `python -m flask run` to start the server.
+Then run either `flask run` or `python -m flask run` to start the development server.
+
+For production, the application uses [Gunicorn](https://gunicorn.org/) for the server as defined in the [Procfile](/Procfile) (for [Heroku](https://www.heroku.com/) deployment).
