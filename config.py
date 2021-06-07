@@ -6,11 +6,12 @@ class Config:
     IEX_KEY = os.getenv("IEX_KEY")
     GOOGLE_NEWS_KEY = os.getenv("GOOGLE_NEWS_KEY")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    # Fix database URI for Postgresql and SQLAlchemy for Heroku
+    if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
 
 class ProductionConfig(Config):
-    # Hack to fix Postgresql and SQLAlchemy for Heroku
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL").replace("://", "ql://", 1)
-    # pass
+    pass
 
 # class StagingConfig(Config):
 #     DEBUG = True
