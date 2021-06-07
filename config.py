@@ -8,7 +8,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
 class ProductionConfig(Config):
-    pass
+    # Hack to fix Postgresql and SQLAlchemy for Heroku
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL").replace("://", "ql://", 1)
+    # pass
 
 # class StagingConfig(Config):
 #     DEBUG = True
