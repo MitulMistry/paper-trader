@@ -20,6 +20,9 @@ class Holding(db.Model):
     symbol = db.Column(db.String(6), nullable=False)
     shares = db.Column(db.Float, nullable=False)
 
+    def __repr__(self):
+        return "<Holding %r>" % self.symbol
+
 class Transaction(db.Model):
     __tablename__ = "transactions"
 
@@ -28,3 +31,6 @@ class Transaction(db.Model):
     shares = db.Column(db.Float, nullable=False)
     price = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return "<Transaction %r>" % self.timestamp
