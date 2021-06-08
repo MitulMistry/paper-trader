@@ -1,7 +1,9 @@
 alembic==1.6.5
+cachelib==0.1.1
 click==8.0.1
 Flask==2.0.1
 Flask-Migrate==3.0.1
+Flask-Session==0.3.2
 Flask-SQLAlchemy==2.5.1
 greenlet==1.1.0
 gunicorn==20.1.0
