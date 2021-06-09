@@ -1,6 +1,7 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
+from tempfile import mkdtemp
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -12,12 +13,27 @@ from datetime import datetime
 app = Flask(__name__)
 env_config = os.getenv("APP_SETTINGS", "config.DevelopmentConfig")
 app.config.from_object(env_config)
+
+# Configure SQLAlchemy and migrations using Alembic
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from models import User, Holding, Transaction
+# Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
+# Make sure API keys are set
+if not os.environ.get("IEX_API_KEY"):
+    raise RuntimeError("IEX_API_KEY not set")
+
+if not os.environ.get("NEWS_API_KEY"):
+    raise RuntimeError("NEWS_API_KEY not set")
+
+# Import models for SQLAlchemy
+from models import User, Holding, Transaction
 
 @app.route("/")
 def index():

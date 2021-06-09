@@ -3,8 +3,8 @@ import os
 class Config:
     DEBUG = False
     DEVELOPMENT = False
-    IEX_KEY = os.getenv("IEX_KEY")
-    GOOGLE_NEWS_KEY = os.getenv("GOOGLE_NEWS_KEY")
+    IEX_API_KEY = os.getenv("IEX_KEY")
+    NEWS_API_KEY = os.getenv("GOOGLE_NEWS_KEY")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     # Fix database URI for Postgresql and SQLAlchemy for Heroku
     if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):

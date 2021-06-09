@@ -12,8 +12,8 @@ To run the application in development mode, configure Flask by entering the foll
 export FLASK_APP=app.py
 export FLASK_ENV=development
 export DATABASE_URL=""
-export IEX_KEY=""
-export GOOGLE_NEWS_KEY=""
+export IEX_API_KEY=""
+export NEWS_API_KEY=""
 ```
 Insert the url for the Postgresql database in the quotes after DATABASE_URL. Insert the Google News and IEX API keys in their respective spots as well (after registering for accounts).
 
