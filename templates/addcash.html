@@ -6,4 +6,13 @@
 
 {% block main %}
     <h1>Add Cash to Account</h1>
+
+    <p>Current Cash: </p>
+    <form action="/addcash" method="post">
+        <div class="mb-3">
+          <label for="cash1" class="form-label">Amount of cash to add</label>
+          <input type="number" class="form-control" id="cash1">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 {% endblock %}

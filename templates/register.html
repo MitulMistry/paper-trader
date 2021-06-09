@@ -6,4 +6,24 @@
 
 {% block main %}
     <h1>Register</h1>
+
+    <form action="/register" method="post">
+        <div class="mb-3">
+            <label for="username1" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username1"">
+        </div>
+        <div class="mb-3">
+          <label for="email1" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email1">
+        </div>
+        <div class="mb-3">
+          <label for="password1" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password1">
+        </div>
+        <div class="mb-3">
+            <label for="password2" class="form-label">Password Confirmation</label>
+            <input type="password" class="form-control" id="password2">
+          </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 {% endblock %}
