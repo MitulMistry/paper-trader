@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+from markupsafe import escape
 from datetime import datetime
 
 # Configure application
@@ -107,11 +108,12 @@ def sell():
 
 
 @app.route("/quote/<string:stock_symbol>")
-def quote():
+def quote(stock_symbol):
     """Get stock quote"""
 
     # TODO
     # Get stock symbol from URL
+    # lookup(escape(stock_symbol)) # Escape user input to ensure safety
     # Check for valid stock symbol
     
     return render_template("quote.html")
