@@ -20,10 +20,11 @@ from models import User, Holding, Transaction
 
 @app.route("/")
 def index():
-    """Show website splash page"""
+    """Show website home page"""
     # iex_key = app.config.get("IEX_KEY")
     # google_news_key = app.config.get("GOOGLE_NEWS_KEY")
-    return "<p>Hello World! This is the Paper Trader app.</p>"
+
+    return render_template("index.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
