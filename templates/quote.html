@@ -6,4 +6,36 @@
 
 {% block main %}
     <h1>Quote</h1>
+
+    <p>
+        <span class="badge bg-secondary">SYMB</span>
+        <strong>Corporation</strong>
+    </p>
+    <p>$50.00</p>
+    <p>+$1.00 2.00%</p>
+    <p>Currently holding: <strong>10 shares</strong></p>
+    <p>Cost of holdings: <strong>$400.00</strong></p>
+    <p>Market value of holdings: <strong> $500.00</strong></p>
+    <p>Gain/loss: <strong>+$100.00</strong></p>
+    <p>
+        <a href="/buy" class="btn btn-primary" role="button">Buy</a>
+        <a href="/sell" class="btn btn-primary" role="button">Sell</a>
+    </p>
+
+    <h2>News</h2>
+
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <a href="#"><img src="https://via.placeholder.com/350" width="100%" height="250" alt="..."></a>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="#">News Item</a></h5>
+                    <p class="card-text">Bunch of text</p>
+                    <p class="card-text"><small class="text-muted">Published: 06/09/2021</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

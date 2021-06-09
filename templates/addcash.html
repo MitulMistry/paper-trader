@@ -10,8 +10,11 @@
     <p>Current Cash: </p>
     <form action="/addcash" method="post">
         <div class="mb-3">
-          <label for="cash1" class="form-label">Amount of cash to add</label>
-          <input type="number" class="form-control" id="cash1">
+            <label for="cash1" class="form-label">Amount of cash to add</label>
+            <input type="number" class="form-control" id="cash1">
+            <div id="resetHelpBlock" class="form-text">
+                Your total cash in account cannot exceed $10,000,000.
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

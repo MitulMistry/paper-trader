@@ -13,17 +13,28 @@
             <input type="text" class="form-control" id="username1"">
         </div>
         <div class="mb-3">
-          <label for="email1" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="email1">
+            <label for="email1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email1">
         </div>
         <div class="mb-3">
-          <label for="password1" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password1">
+            <label for="password1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password1">
+            <div id="passwordHelpBlock" class="form-text">
+                Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+            </div>
         </div>
+        
         <div class="mb-3">
             <label for="password2" class="form-label">Password Confirmation</label>
             <input type="password" class="form-control" id="password2">
-          </div>
+        </div>
+        <div class="mb-3">
+            <label for="cash1" class="form-label">Starting cash</label>
+            <input type="number" class="form-control" id="cash1" value="10000">
+            <div id="cashHelpBlock" class="form-text">
+                Cash amount must be between $100 - $10,000,000.
+            </div>
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% endblock %}

@@ -6,4 +6,21 @@
 
 {% block main %}
     <h1>Sell Shares</h1>
+
+    <form action="/sell" method="post">
+        <div class="mb-3">
+            <label for="stock1" class="form-label">Stock to sell</label>
+            <select class="form-select" id="stock1" aria-label="Stocks to sell">
+                <option selected>Open this select menu</option>
+                <option value="1">Stock 1</option>
+                <option value="2">Stock 2</option>
+                <option value="3">Stock 3</option>
+            </select>
+          </div>
+        <div class="mb-3">
+            <label for="shares1" class="form-label">Number of shares to sell</label>
+            <input type="number" class="form-control" id="shares1">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 {% endblock %}

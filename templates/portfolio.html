@@ -6,4 +6,30 @@
 
 {% block main %}
     <h1>Your Portfolio</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">Symbol</th>
+            <th scope="col">Name</th>
+            <th scope="col">Shares</th>
+            <th scope="col">Cost Per Share</th>
+            <th scope="col">Current Price</th>
+            <th scope="col">Market Value</th>
+            <th scope="col"></th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SYMB</td>
+                <td>Corporation</td>
+                <td>5</td>
+                <td>$5</td>
+                <td>$5</td>
+                <td>$25</td>
+                <td>
+                    <a href="/buy" class="btn btn-primary btn-sm" role="button">Buy</a>
+                    <a href="/sell" class="btn btn-primary btn-sm" role="button">Sell</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 {% endblock %}
