@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from markupsafe import escape
+import re
 from datetime import datetime
 
 # Configure application
@@ -50,8 +51,69 @@ def register():
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # TODO
+        
+        # Validate username was submitted
+        if not request.form.get("username"):
+            return render_template("register.html", error="Must provide username"), 400 # Status code 400, bad request
+        
+        # Validate username uniqueness (doesn't already exist in database)
+        if User.query.filter_by(username=request.form.get("username")).first() == None:
+            return render_template("register.html", error="Username is already taken"), 400
 
+        # Validate email was submitted
+        if not request.form.get("email"):
+            return render_template("register.html", error="Must provide email"), 400
+
+        # Validate email structure
+        email_regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
+        if not re.search(email_regex, request.form.get("email")):
+            return render_template("register.html", error="Must provide valid email"), 400
+
+        # Validate email uniqueness (doesn't already exist in database)
+        if User.query.filter_by(email=request.form.get("email")).first() == None:
+            return render_template("register.html", error="Username is already taken"), 400
+
+        # Validate password was submitted
+        if not request.form.get("password"):
+            return render_template("register.html", error="Must provide password"), 400
+
+        # Validate password confirmation was submitted
+        if not request.form.get("confirmation"):
+            return render_template("register.html", error="Must provide password confirmation"), 400
+
+        # Validate password matches password confirmation
+        if request.form.get("password") != request.form.get("confirmation"):
+            return render_template("register.html", error="Password must match password confirmation"), 400
+
+        # Validate password structure
+        password_regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
+        if not re.search(password_regex, request.form.get("password")):
+            return render_template("register.html", error="Must provide password that follows the rules: At least one number, at least \
+                one uppercase and one lowercase character, at least one special symbol, and be between 6 to 20 characters long."), 400
+        
+        # Validate starting cash amount was submitted
+        if not request.form.get("cash"):
+            return render_template("register.html", error="Must provide starting cash amount"), 400
+
+        # Validate starting cash amount fits within bounds
+        if not (request.form.get("cash").isnumeric() and request.form.get("cash") >= 100 and request.form.get("cash") <= 10000000):
+            return render_template("register.html", error="Must provide valid starting cash amount (between $100 and $10,000,000)"), 400
+
+        # Create user in database        
+        new_user = User(
+            username=request.form.get("username"),
+            email=request.form.get("email"),
+            password_hash=generate_password_hash(request.form.get("password")),
+            cash=request.form.get("cash")
+        )
+        db.session.add(new_user)
+        db.session.commit() 
+
+        # Remember which user has logged in
+        session["user_id"] = User.query.filter_by(username=request.form.get("username")).first().id
+
+        # Redirect user to their portfolio
+        flash("Account successfully created")
         return redirect("/portfolio")
     
     # User reached route via GET (as by clicking a link or via redirect)
@@ -63,10 +125,31 @@ def register():
 def login():
     """Log user in and create session"""
     
+    # Forget any user_id
+    session.clear()
+    
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # TODO
 
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            return render_template("login.html", error="Must provide username"), 400
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return render_template("login.html", error="Must provide password"), 400
+
+        # Query database for username
+        user = User.query.filter(username=request.form.get("username")).first()
+
+        # Ensure username exists and password is correct
+        if user == None or not check_password_hash(user.password_hash, request.form.get("password")):
+            return render_template("login.html", error="Invalid username and/or password"), 403
+
+        # Remember which user has logged in
+        session["user_id"] = user.id
+
+        flash("Logged in as " + user.username)
         return redirect("/portfolio")
     
     # User reached route via GET (as by clicking a link or via redirect)
@@ -78,8 +161,10 @@ def login():
 def logout():
     """Log user out and clear session"""
     
-    # TODO
+    # Forget any user_id
+    session.clear()
 
+    flash("Logged out")
     return redirect("/")
 
 
