@@ -13,8 +13,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
     cash = db.Column(db.Integer, nullable=False, default=10000)
-    holdings = db.relationship("holdings", backref="user", lazy=True)
-    transactions = db.relationship("transactions", backref="user", lazy=True)
+    holdings = db.relationship("Holding", backref="user", lazy=True)
+    transactions = db.relationship("Transaction", backref="user", lazy=True)
 
     # Method to represent the object when we query for it
     def __repr__(self):
@@ -25,7 +25,7 @@ class Holding(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     symbol = db.Column(db.String(5), nullable=False)
-    shares = db.Column(db.Float, nullable=False)
+    shares = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable="False")
 
     def __repr__(self):
@@ -36,7 +36,7 @@ class Transaction(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     symbol = db.Column(db.String(5), nullable=False)
-    shares = db.Column(db.Float, nullable=False)
+    shares = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable="False")
