@@ -145,7 +145,7 @@ def login():
             return render_template("login.html", error="Must provide password"), 400
 
         # Query database for username
-        user = User.query.filter(username=request.form.get("username")).first()
+        user = User.query.filter_by(username=request.form.get("username")).first()
 
         # Ensure username exists and password is correct
         if user == None or not check_password_hash(user.password_hash, request.form.get("password")):
@@ -296,7 +296,7 @@ def sell():
 
         # Query database to find stock in user's holdings
         user = User.query.get(session["user_id"])
-        holding = Holding.query.filter(user_id=user.id, symbol=quote["symbol"])
+        holding = Holding.query.filter(Holding.user_id==user.id & Holding.symbol==quote["symbol"])
 
         # Check if user owns shares of stock user wants to sell
         if holding == None:
