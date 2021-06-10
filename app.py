@@ -172,8 +172,14 @@ def logout():
 def delete():
     """Delete user account"""
     
-    # TODO
+    user = User.query.get(session["user_id"])
 
+    db.session.delete(user)
+    db.session.delete(user.holdings)
+    db.session.delete(user.transactions)
+    db.session.commit()
+
+    flash("Account successfully deleted")
     return redirect("/")
 
 
@@ -224,18 +230,32 @@ def quote(stock_symbol):
 def portfolio():
     """Show portfolio of user's stock holdings"""
 
-    # TODO
+    # Query database for current user's stock holdings (portfolio)
+    user = User.query.get(session["user_id"])
+    stocks = user.holdings
+    
+    # Get current prices for stocks using API
+    for stock in stocks:
+        quote = lookup(stock["symbol"])
+        stock["price"] = quote["price"]
+        stock["shares"] = int(stock["shares"])
+        stock["total"] = stock["price"] * stock["shares"]
 
-    return render_template("portfolio.html")
+    # Query database for current user's cash
+    cash = user.cash
+
+    return render_template("portfolio.html", stocks=stocks, cash=cash)
 
 
 @app.route("/history")
 def history():
     """Show history of user's transactions"""
 
-    # TODO
+    # Query database for all transactions made by current user
+    user = User.query.get(session["user_id"])
+    transactions = user.transactions
 
-    return render_template("history.html")
+    return render_template("history.html", transactions=transactions)
 
 
 @app.route("/addcash", methods=["GET", "POST"])
