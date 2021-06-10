@@ -163,6 +163,7 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     """Log user out and clear session"""
 
@@ -174,6 +175,7 @@ def logout():
 
 
 @app.route("/delete", methods=["DELETE"])
+@login_required
 def delete():
     """Delete user account"""
 
@@ -189,6 +191,7 @@ def delete():
 
 
 @app.route("/buy", methods=["GET", "POST"])
+@login_required
 def buy():
     """Buy shares of a stock"""
 
@@ -266,6 +269,7 @@ def buy():
 
 
 @app.route("/sell", methods=["GET", "POST"])
+@login_required
 def sell():
     """Sell shares of a stock"""
 
@@ -363,6 +367,7 @@ def quote(stock_symbol):
 
 
 @app.route("/portfolio")
+@login_required
 def portfolio():
     """Show portfolio of user's stock holdings"""
 
@@ -384,6 +389,7 @@ def portfolio():
 
 
 @app.route("/history")
+@login_required
 def history():
     """Show history of user's transactions"""
 
@@ -395,6 +401,7 @@ def history():
 
 
 @app.route("/addcash", methods=["GET", "POST"])
+@login_required
 def addcash():
     """Add cash to user's account"""
 
@@ -431,6 +438,7 @@ def addcash():
 
 
 @app.route("/reset", methods=["GET", "POST"])
+@login_required
 def reset():
     """Reset user's account"""
 
