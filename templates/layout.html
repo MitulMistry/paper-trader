@@ -22,34 +22,39 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/register">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/portfolio">Portfolio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/history">History</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/buy">Buy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/sell">Sell</a>
-                        </li>
+                        {% if session.user_id %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/buy">Buy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/sell">Sell</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/portfolio">Portfolio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/history">History</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login">Login</a>
+                            </li>
+                        {% endif %}                        
                     </ul>
                     <form action="/quote" method="post" class="d-flex">
                         <input class="form-control me-2" type="search" placeholder="Enter stock symbol" name="symbol" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/logout">Logout</a>
-                        </li>
-                    </ul>
+                    {% if session.user_id %}
+                        <ul class="navbar-nav d-flex mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout">Logout</a>
+                            </li>
+                        </ul>
+                    {% endif %}
                 </div>
             </div>
         </nav>
