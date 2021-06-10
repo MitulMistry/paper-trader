@@ -466,3 +466,15 @@ def reset():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("reset.html")
+
+
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return render_template("index.html", error=e.name + " " + e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
