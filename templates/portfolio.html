@@ -18,18 +18,39 @@
             <th scope="col"></th>
         </thead>
         <tbody>
+        {% for stock in stocks %}
             <tr>
-                <td>SYMB</td>
-                <td>Corporation</td>
-                <td>5</td>
-                <td>$5</td>
-                <td>$5</td>
-                <td>$25</td>
+                <td>{{ stock["symbol"] }}</td>
+                <td>{{ stock["name"] }}</td>
+                <td>{{ stock["shares"] }}</td>
+                <td>TODO</td>
+                <td>{{ stock["price"] | usd }}</td>
+                <td>{{ stock["total"] | usd }}</td>
                 <td>
                     <a href="/buy" class="btn btn-primary btn-sm" role="button">Buy</a>
                     <a href="/sell" class="btn btn-primary btn-sm" role="button">Sell</a>
                 </td>
             </tr>
+        {% endfor %}
         </tbody>
     </table>
+
+    <table class="table">
+        <thead>
+            <th scope="col">Available Cash</th>
+            <th scope="col">Total Portfolio Cost</th>
+            <th scope="col">Current Portfolio Value</th>
+            <th scope="col">Gain/Loss</th>
+        </thead>
+        <tbody>
+            <td>TODO</td>
+        </tbody>
+    </table>
+
+    <p class="d-flex justify-content-end">
+        <a href="/addcash" class="btn btn-primary m-2" role="button">Add Cash</a>
+        <a href="/reset" class="btn btn-primary m-2" role="button">Reset Portfolio</a>
+        <a href="/update" class="btn btn-primary m-2" role="button">Update Info</a>
+        <a href="/delete" class="btn btn-primary m-2" role="button">Delete Account</a>
+    </p>
 {% endblock %}
