@@ -468,13 +468,14 @@ def reset():
         return render_template("reset.html")
 
 
+# Processes errors
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    return render_template("index.html", error=e.name + " " + e.code)
+    return render_template("index.html", error=f"{e.name} - {e.code}")
 
 
-# Listen for errors
+# Listen for errors (like 404 not found)
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
