@@ -11,10 +11,12 @@
         <div class="mb-3">
             <label for="symbol1" class="form-label">Stock to sell</label>
             <select class="form-select" name="symbol" id="symbol1" aria-label="Stocks to sell">
-                <option disabled selected value="">Symbol</option>
-                <option value="1">Stock 1</option>
-                <option value="2">Stock 2</option>
-                <option value="3">Stock 3</option>
+                <option disabled {% if not symbol %} selected {% endif %} value="">Symbol</option>
+
+                {% for stock in stocks %}
+                    <option value="{{ stock["symbol"] }}" {% if symbol == stock["symbol"] %} selected
+                    {% endif %}>{{ stock["symbol"] }}</option>
+                {% endfor %}
             </select>
           </div>
         <div class="mb-3">

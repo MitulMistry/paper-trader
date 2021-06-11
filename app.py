@@ -283,6 +283,12 @@ def buy():
         return render_template("buy.html")
 
 
+@app.route("/buy/<string:symbol>")
+@login_required
+def buy_symbol(symbol):
+    return render_template("buy.html", symbol=symbol)
+
+
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
 def sell():
@@ -315,7 +321,7 @@ def sell():
 
         # Query database to find stock in user's holdings
         user = User.query.get(session["user_id"])
-        holding = Holding.query.filter(Holding.user_id==user.id & Holding.symbol==quote["symbol"])
+        holding = Holding.query.filter((Holding.user_id==user.id) & (Holding.symbol==quote["symbol"])).first()
 
         # Check if user owns shares of stock user wants to sell
         if holding == None:
@@ -333,6 +339,7 @@ def sell():
             price=quote["price"],
             timestamp=datetime.now()
         )
+        db.session.add(new_transaction)
 
         # Add funds from sale to user's account
         user.cash += (int(request.form.get("shares")) * quote["price"])
@@ -341,9 +348,9 @@ def sell():
         if holding.shares == new_transaction.shares:
             db.session.delete(holding)
 
-        # Otherwise, update the holding row for the stock in the database
+        # Otherwise, update the holding for the stock in the database
         else:
-            holding.shares -= new_transaction.shares
+            holding.shares += new_transaction.shares # += because shares is negative due to sale
 
         # Save all changes to database
         db.session.commit()
@@ -353,10 +360,22 @@ def sell():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("sell.html")
+        user = User.query.get(session["user_id"])
+        stocks = user.holdings
+
+        return render_template("sell.html", stocks=stocks)
 
 
-@app.route("/quote/<string:stock_symbol>", methods=["GET, POST"])
+@app.route("/sell/<string:symbol>")
+@login_required
+def sell_symbol(symbol):
+    user = User.query.get(session["user_id"])
+    stocks = user.holdings
+
+    return render_template("sell.html", stocks=stocks, symbol=symbol)
+
+
+@app.route("/quote/<string:stock_symbol>", methods=["GET", "POST"])
 def quote(stock_symbol):
     """Get stock quote"""
 
@@ -388,28 +407,31 @@ def portfolio():
 
     # Query database for current user's stock holdings (portfolio)
     user = User.query.get(session["user_id"])
-    stocks = user.holdings
+    holdings = user.holdings
+    stocks = [] # List of stock dicts
     transactions = user.transactions
 
     portfolio_cost = 0
     portfolio_value = 0
 
     # Get current prices for stocks using API
-    for stock in stocks:
-        quote = lookup(stock["symbol"])
+    for holding in holdings:
+        quote = lookup(holding.symbol)
+        stock = {}
+        stock["symbol"] = holding.symbol
+        stock["name"] = quote["name"]
         stock["price"] = quote["price"]
-        stock["shares"] = int(stock["shares"])
-        stock["total"] = stock["price"] * stock["shares"]
+        stock["shares"] = holding.shares
+        stock["total"] = quote["price"] * holding.shares
+        stocks.append(stock) # Append stock dict to list of stocks
         portfolio_value += stock["total"]
-
-    # Query database for current user's cash
-    cash = user.cash
 
     # Calculate cost of all portfolio transactions
     # If sold stock, will subtract since shares in transaction will be negative
     for transaction in transactions:
-        portfolio_cost += transaction["shares"] * transaction["price"]
+        portfolio_cost += transaction.shares * transaction.price
 
+    # Format current user's portfolio info
     user_info = {
         "cash": user.cash,
         "portfolio_cost": portfolio_cost,
@@ -451,15 +473,15 @@ def addcash():
         # Validate account doesn't already have too much cash (> $10,000,000)
         user = User.query.get(session["user_id"])
 
-        if not (user.cash >= 10000000):
+        if (user.cash >= 10000000):
             return render_template("addcash.html", error="Account already has too much cash ($10,000,000 or more)"), 400
 
         # Validate account won't end up with too much cash (> $10,000,000)
-        if not ((user.cash + int(request.form.get("cash"))) >= 10000000):
+        if ((user.cash + int(request.form.get("cash"))) > 10000000):
             return render_template("addcash.html", error="Amount entered would lead the account to have too much cash ($10,000,000 or more). Please enter a lower amount."), 400
 
         user.cash += int(request.form.get("cash"))
-        db.session.commit
+        db.session.commit()
 
         flash("Cash amount added successfully")
         return redirect("/portfolio")
@@ -482,18 +504,27 @@ def reset():
             return render_template("reset.html", error="Must provide a cash amount to restart account with"), 400
 
         # Validate starting cash amount fits within bounds
-        if not (request.form.get("cash").isdigit() and int(request.form.get("cash")) >= 100 and int(trequest.form.get("cash")) <= 10000000):
+        if not (request.form.get("cash").isdigit() and int(request.form.get("cash")) >= 100 and int(request.form.get("cash")) <= 10000000):
             return render_template("register.html", error="Must provide valid starting cash amount (between $100 and $10,000,000)"), 400
 
         user = User.query.get(session["user_id"])
 
         user.cash = int(request.form.get("cash"))
-        db.session.delete(user.holdings)
-        db.session.delete(user.transactions)
+
+        # Iterate through and delete user's holdings
+        holdings = user.holdings
+        for holding in holdings:            
+            db.session.delete(holding)
+        
+        # Iterate through and delete user's transactions
+        transactions = user.transactions
+        for transaction in transactions:
+            db.session.delete(transaction)
+
         db.session.commit()
 
         flash("Account successfully reset")
-        return redirect("/reset")
+        return redirect("/portfolio")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:

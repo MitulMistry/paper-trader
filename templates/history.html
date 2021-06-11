@@ -20,7 +20,7 @@
                 <td>{{ transaction["symbol"] }}</td>
                 <td>{{ transaction["shares"] }}</td>
                 <td>{{ transaction["price"] | usd }}</td>
-                <td>{{ transaction["timestamp"] }}</td>
+                <td>{{ transaction["timestamp"].strftime('%Y-%m-%d, %I:%M %p') }}</td>
             </tr>
         {% endfor %}
         </tbody>

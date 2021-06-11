@@ -27,8 +27,8 @@
                 <td>{{ stock["price"] | usd }}</td>
                 <td>{{ stock["total"] | usd }}</td>
                 <td>
-                    <a href="/buy" class="btn btn-primary btn-sm" role="button">Buy</a>
-                    <a href="/sell" class="btn btn-primary btn-sm" role="button">Sell</a>
+                    <a href={{ "/buy/" + stock["symbol"] }} class="btn btn-primary btn-sm" role="button">Buy</a>
+                    <a href={{ "/sell/" + stock["symbol"] }} class="btn btn-primary btn-sm" role="button">Sell</a>
                 </td>
             </tr>
         {% endfor %}
