@@ -174,6 +174,21 @@ def logout():
     return redirect("/")
 
 
+@app.route("/update", methods=["GET", "POST"])
+@login_required
+def update():
+    """Update user info"""
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        # TODO
+        return redirect("/portfolio")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("update.html")
+
+
 @app.route("/delete", methods=["DELETE"])
 @login_required
 def delete():
@@ -374,6 +389,10 @@ def portfolio():
     # Query database for current user's stock holdings (portfolio)
     user = User.query.get(session["user_id"])
     stocks = user.holdings
+    transactions = user.transactions
+
+    portfolio_cost = 0
+    portfolio_value = 0
 
     # Get current prices for stocks using API
     for stock in stocks:
@@ -381,11 +400,24 @@ def portfolio():
         stock["price"] = quote["price"]
         stock["shares"] = int(stock["shares"])
         stock["total"] = stock["price"] * stock["shares"]
+        portfolio_value += stock["total"]
 
     # Query database for current user's cash
     cash = user.cash
 
-    return render_template("portfolio.html", stocks=stocks, cash=cash)
+    # Calculate cost of all portfolio transactions
+    # If sold stock, will subtract since shares in transaction will be negative
+    for transaction in transactions:
+        portfolio_cost += transaction["shares"] * transaction["price"]
+
+    user_info = {
+        "cash": user.cash,
+        "portfolio_cost": portfolio_cost,
+        "portfolio_value": portfolio_value,
+        "gain_loss": portfolio_value - portfolio_cost
+    }
+
+    return render_template("portfolio.html", stocks=stocks, user_info=user_info)
 
 
 @app.route("/history")

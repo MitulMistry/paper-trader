@@ -35,17 +35,29 @@
         </tbody>
     </table>
 
-    <table class="table">
-        <thead>
-            <th scope="col">Available Cash</th>
-            <th scope="col">Total Portfolio Cost</th>
-            <th scope="col">Current Portfolio Value</th>
-            <th scope="col">Gain/Loss</th>
-        </thead>
-        <tbody>
-            <td>TODO</td>
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="row">
+          <div class="col">
+          </div>
+          <div class="col-8">
+            <table class="table">
+                <thead>
+                    <th scope="col">Available Cash</th>
+                    <th scope="col">Total Portfolio Cost</th>
+                    <th scope="col">Current Portfolio Value</th>
+                    <th scope="col">Gain/Loss</th>
+                </thead>
+                <tbody>
+                    <td>{{ user_info["cash"] | usd }}</td>
+                    <td>{{ user_info["portfolio_cost"] | usd }}</td>
+                    <td>{{ user_info["portfolio_value"] | usd }}</td>
+                    <td>{{ user_info["gain_loss"] | usd }}</td>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    
 
     <p class="d-flex justify-content-end">
         <a href="/addcash" class="btn btn-primary m-2" role="button">Add Cash</a>
