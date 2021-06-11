@@ -12,7 +12,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
-    cash = db.Column(db.Integer, nullable=False, default=10000)
+    cash = db.Column(db.Float, nullable=False, default=10000.00)
     holdings = db.relationship("Holding", backref="user", lazy=True)
     transactions = db.relationship("Transaction", backref="user", lazy=True)
 
