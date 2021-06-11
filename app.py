@@ -62,7 +62,7 @@ def register():
             return render_template("register.html", error="Must provide username"), 400 # Status code 400, bad request
 
         # Validate username uniqueness (doesn't already exist in database)
-        if User.query.filter_by(username=request.form.get("username")).first() == None:
+        if User.query.filter_by(username=request.form.get("username")).first() != None:
             return render_template("register.html", error="Username is already taken"), 400
 
         # Validate email was submitted
@@ -75,7 +75,7 @@ def register():
             return render_template("register.html", error="Must provide valid email"), 400
 
         # Validate email uniqueness (doesn't already exist in database)
-        if User.query.filter_by(email=request.form.get("email")).first() == None:
+        if User.query.filter_by(email=request.form.get("email")).first() != None:
             return render_template("register.html", error="Username is already taken"), 400
 
         # Validate password was submitted
@@ -83,11 +83,11 @@ def register():
             return render_template("register.html", error="Must provide password"), 400
 
         # Validate password confirmation was submitted
-        if not request.form.get("confirmation"):
+        if not request.form.get("password_confirmation"):
             return render_template("register.html", error="Must provide password confirmation"), 400
 
         # Validate password matches password confirmation
-        if request.form.get("password") != request.form.get("confirmation"):
+        if request.form.get("password") != request.form.get("password_confirmation"):
             return render_template("register.html", error="Password must match password confirmation"), 400
 
         # Validate password structure
@@ -101,7 +101,7 @@ def register():
             return render_template("register.html", error="Must provide starting cash amount"), 400
 
         # Validate starting cash amount fits within bounds
-        if not (request.form.get("cash").isdigit() and int(request.form.get("cash")) >= 100 and int(trequest.form.get("cash")) <= 10000000):
+        if not (request.form.get("cash").isdigit() and int(request.form.get("cash")) >= 100 and int(request.form.get("cash")) <= 10000000):
             return render_template("register.html", error="Must provide valid starting cash amount (between $100 and $10,000,000)"), 400
 
         # Create user in database
