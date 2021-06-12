@@ -10,7 +10,7 @@ from markupsafe import escape
 import re
 from datetime import datetime
 
-from helpers import login_required, lookup, usd
+from helpers import login_required, lookup, get_news, usd
 
 # Configure application
 app = Flask(__name__)
@@ -286,7 +286,7 @@ def buy():
 @app.route("/buy/<string:symbol>")
 @login_required
 def buy_symbol(symbol):
-    return render_template("buy.html", symbol=symbol)
+    return render_template("buy.html", symbol=escape(symbol))
 
 
 @app.route("/sell", methods=["GET", "POST"])
@@ -372,21 +372,30 @@ def sell_symbol(symbol):
     user = User.query.get(session["user_id"])
     stocks = user.holdings
 
-    return render_template("sell.html", stocks=stocks, symbol=symbol)
+    return render_template("sell.html", stocks=stocks, symbol=escape(symbol))
 
 
-@app.route("/quote/<string:stock_symbol>", methods=["GET", "POST"])
-def quote(stock_symbol):
-    """Get stock quote"""
+@app.route("/quote", methods=["POST"])
+def quote():
+    """Get stock quote via form submission"""
 
     # User reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-        symbol = request.form.get("symbol")
+    symbol = request.form.get("symbol")
+
+    # Validate length and alphabetical nature of symbol string
+    if not (len(symbol) <= 5 and symbol.isalpha()):
+        return render_template("index.html", error="Invalid symbol"), 400
+
+    return redirect("/quote/" + symbol)
+
+
+@app.route("/quote/<string:stock_symbol>")
+def quote_symbol(stock_symbol):
+    """Get stock quote"""    
 
     # User reached route via GET (as by clicking a link or via redirect)
-    # Get stock symbol from URL, escape user input to ensure safety
-    else:
-        symbol = escape(stock_symbol)
+    # Get stock symbol from URL, escape user input to ensure safety    
+    symbol = escape(stock_symbol)
 
     # Validate length and alphabetical nature of symbol string
     if not (len(symbol) <= 5 and symbol.isalpha()):
@@ -396,8 +405,39 @@ def quote(stock_symbol):
 
     if not quote:
         return render_template("index.html", error="Invalid symbol"), 400
-    else:
-        return render_template("quote.html", quote=quote)
+
+    # news_items = get_news(symbol)
+    news_items = []
+
+    # Check if user is logged in, then check if they own the stock
+    user_holding = None
+    if "user_id" in session.keys():        
+        user = User.query.get(session["user_id"])
+        holding = Holding.query.filter((Holding.user_id == user.id) & (Holding.symbol == quote["symbol"])).first()
+        
+        value = holding.shares * float(quote["price"])
+        cost = 0
+
+        # Calculate cost of all portfolio transactions
+        # If sold stock, will subtract since shares in transaction will be negative
+        transactions = Transaction.query.filter((Transaction.user_id == user.id) & (Transaction.symbol == quote["symbol"])).first()
+
+        # Check if there are multiple transactions
+        if type(transactions) is list:
+            for transaction in transactions:
+                cost += transaction.shares * transaction.price
+        # Otherwise, if transactions is not None, but not a list, must only be sinlge entry
+        elif transactions:
+            cost = transactions.shares * transactions.price
+        
+        user_holding = {
+            "shares": holding.shares,
+            "cost": cost,
+            "value": value,
+            "gain_loss": value - cost
+        }
+
+    return render_template("quote.html", quote=quote, news_items=news_items, user_holding=user_holding)
 
 
 @app.route("/portfolio")

@@ -8,19 +8,21 @@
     <h1>Quote</h1>
 
     <p>
-        <span class="badge bg-secondary">SYMB</span>
-        <strong>Corporation</strong>
+        <span class="badge bg-secondary">{{ quote["symbol"] }}</span>
+        <strong>{{ quote["name"] }}</strong>
     </p>
-    <p>$50.00</p>
+    <p>{{ quote["price"] | usd }}</p>
     <p>+$1.00 2.00%</p>
-    <p>Currently holding: <strong>10 shares</strong></p>
-    <p>Cost of holdings: <strong>$400.00</strong></p>
-    <p>Market value of holdings: <strong> $500.00</strong></p>
-    <p>Gain/loss: <strong>+$100.00</strong></p>
-    <p>
-        <a href="/buy" class="btn btn-primary" role="button">Buy</a>
-        <a href="/sell" class="btn btn-primary" role="button">Sell</a>
-    </p>
+    {% if user_holding %}
+        <p>Currently holding: <strong>{{ user_holding.shares }} shares</strong></p>
+        <p>Cost of holdings: <strong>{{ user_holding.cost | usd }}</strong></p>
+        <p>Market value of holdings: <strong>{{ user_holding.value | usd }}</strong></p>
+        <p>Gain/loss: <strong>+$100.00</strong></p>
+        <p>
+            <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
+            <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-primary" role="button">Sell</a>
+        </p>
+    {% endif %}
 
     <h2>News</h2>
 
