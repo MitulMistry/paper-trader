@@ -542,7 +542,8 @@ def addcash():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("addcash.html")
+        user = User.query.get(session["user_id"])
+        return render_template("addcash.html", cash=user.cash)
 
 
 @app.route("/reset", methods=["GET", "POST"])

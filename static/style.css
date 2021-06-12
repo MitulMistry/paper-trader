@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #0A192F;
+    color: #CCD6F6;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+a {
+    color: #57D9C1;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #9df1e2;
+}
+
+.bg-pt-dark {
+    background-color: #152A4C;
+}
+
+.bg-pt-dark2 {
+    background-color:#152A4C;
+}
+
+.navbar-dark .navbar-brand {
+    color: #57D9C1;
+    font-size: 1.5rem;
+    display: block;
+}
+
+.navbar-dark .navbar-brand:hover {
+    color: #57D9C1;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(204,214,246,.75);
+    font-size: 1.2rem;
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+}
+
+.btn-primary {
+    color: #CCD6F6;
+    background-color: #203f70;
+    border-color: #203f70;
+}
+
+.btn-primary:hover {
+    color: #CCD6F6;
+    background-color: #1f4681;
+    border-color: #1f4681;
+    /* border-color: #556289; */
+}
+
+.btn-secondary {
+    color: #CCD6F6;
+    background-color: #0A192F;
+    border-color: #0A192F;
+}
+
+.btn-secondary:hover {
+    color: #CCD6F6;
+    background-color: #0e213d;
+    border-color: #0e213d;
+}
+
+.form-control {
+    background-color: #0A192F;
+    color: #CCD6F6;
+    border-color: #0A192F;
+}
+
+.form-control:active, .form-control:focus {
+    background-color: #0A192F;
+    color: #CCD6F6;
+    border-color: #0A192F;
+}
+
+.form-text {
+    color: #b1bad6;
+}
+
+.alert-primary {
+	color: #CCD6F6;
+    font-size: 1.2rem;
+	background-color: #0F7677;
+	border-color: #0F7677;
+}
+
+.alert-danger {
+	color: #CCD6F6;
+    font-size: 1.2rem;
+	background-color: #66233A;
+	border-color: #66233A;
+}
+
+.table {
+	/* --bs-table-bg: transparent;
+	--bs-table-accent-bg: transparent; */
+	--bs-table-striped-color: #CCD6F6;
+	--bs-table-striped-bg: #213A62;
+	--bs-table-active-color: #CCD6F6;
+	--bs-table-active-bg: #213A62;
+	--bs-table-hover-color: #CCD6F6;
+	--bs-table-hover-bg: #213A62;
+	color: #CCD6F6;
+	border-color: #213A62;
+}
+
+tbody, td, tfoot, th, thead, tr {
+	/* border-color: inherit; */
+	border-style: none;
+	/* border-width: 0; */
+}

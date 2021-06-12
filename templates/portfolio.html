@@ -7,64 +7,65 @@
 {% block main %}
     <h1>Your Portfolio</h1>
 
-    <table class="table table-striped">
-        <thead>
-            <th scope="col">Symbol</th>
-            <th scope="col">Name</th>
-            <th scope="col">Shares</th>
-            <th scope="col">Cost Per Share</th>
-            <th scope="col">Current Price</th>
-            <th scope="col">Total Cost</th>
-            <th scope="col">Market Value</th>
-            <th scope="col"></th>
-        </thead>
-        <tbody>
-        {% for stock in stocks %}
-            <tr>
-                <td><a href={{ "/quote/" + stock["symbol"] }}>{{ stock["symbol"] }}</a></td>
-                <td>{{ stock["name"] }}</td>
-                <td>{{ stock["shares"] }}</td>
-                <td>{{ stock["cost"] | usd }}</td>
-                <td>{{ stock["price"] | usd }}</td>
-                <td>{{ stock["total_cost"] | usd }}</td>
-                <td>{{ stock["total_value"] | usd }}</td>
-                <td>
-                    <a href={{ "/buy/" + stock["symbol"] }} class="btn btn-primary btn-sm" role="button">Buy</a>
-                    <a href={{ "/sell/" + stock["symbol"] }} class="btn btn-primary btn-sm" role="button">Sell</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
+        <table class="table table-striped">
+            <thead>
+                <th scope="col">Symbol</th>
+                <th scope="col">Name</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Cost Per Share</th>
+                <th scope="col">Current Price</th>
+                <th scope="col">Total Cost</th>
+                <th scope="col">Market Value</th>
+                <th scope="col"></th>
+            </thead>
+            <tbody>
+            {% for stock in stocks %}
+                <tr>
+                    <td><a href={{ "/quote/" + stock["symbol"] }}><strong>{{ stock["symbol"] }}</strong></a></td>
+                    <td>{{ stock["name"] }}</td>
+                    <td>{{ stock["shares"] }}</td>
+                    <td>{{ stock["cost"] | usd }}</td>
+                    <td>{{ stock["price"] | usd }}</td>
+                    <td>{{ stock["total_cost"] | usd }}</td>
+                    <td>{{ stock["total_value"] | usd }}</td>
+                    <td>
+                        <a href={{ "/buy/" + stock["symbol"] }} class="btn btn-secondary btn-sm" role="button">Buy</a>
+                        <a href={{ "/sell/" + stock["symbol"] }} class="btn btn-secondary btn-sm" role="button">Sell</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-    <div class="container">
-        <div class="row">
-          <div class="col">
-          </div>
-          <div class="col-8">
-            <table class="table">
-                <thead>
-                    <th scope="col">Available Cash</th>
-                    <th scope="col">Total Portfolio Cost</th>
-                    <th scope="col">Current Portfolio Value</th>
-                    <th scope="col">Gain/Loss</th>
-                </thead>
-                <tbody>
-                    <td>{{ user_info["cash"] | usd }}</td>
-                    <td>{{ user_info["portfolio_cost"] | usd }}</td>
-                    <td>{{ user_info["portfolio_value"] | usd }}</td>
-                    <td>{{ user_info["gain_loss"] | usd }}</td>
-                </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    
+        <div class="container">
+            <div class="row">
+            <div class="col">
+            </div>
+            <div class="col-8">
+                <table class="table">
+                    <thead>
+                        <th scope="col">Available Cash</th>
+                        <th scope="col">Total Portfolio Cost</th>
+                        <th scope="col">Current Portfolio Value</th>
+                        <th scope="col">Gain/Loss</th>
+                    </thead>
+                    <tbody>
+                        <td>{{ user_info["cash"] | usd }}</td>
+                        <td>{{ user_info["portfolio_cost"] | usd }}</td>
+                        <td>{{ user_info["portfolio_value"] | usd }}</td>
+                        <td>{{ user_info["gain_loss"] | usd }}</td>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>    
 
-    <p class="d-flex justify-content-end">
-        <a href="/addcash" class="btn btn-primary m-2" role="button">Add Cash</a>
-        <a href="/reset" class="btn btn-primary m-2" role="button">Reset Portfolio</a>
-        <a href="/update" class="btn btn-primary m-2" role="button">Update Info</a>
-        <a href="/delete" class="btn btn-primary m-2" role="button">Delete Account</a>
-    </p>
+        <p class="d-flex justify-content-end">
+            <a href="/addcash" class="btn btn-secondary m-2" role="button">Add Cash</a>
+            <a href="/reset" class="btn btn-secondary m-2" role="button">Reset Portfolio</a>
+            <a href="/update" class="btn btn-secondary m-2" role="button">Update Info</a>
+            <a href="/delete" class="btn btn-secondary m-2" role="button">Delete Account</a>
+        </p>
+    </div>
 {% endblock %}

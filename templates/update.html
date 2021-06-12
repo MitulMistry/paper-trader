@@ -7,27 +7,29 @@
 {% block main %}
     <h1>Update</h1>
 
-    <form action="/register" method="post">
-        <div class="mb-3">
-            <label for="username1" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" id="username1"">
-        </div>
-        <div class="mb-3">
-            <label for="email1" class="form-label">Email address</label>
-            <input type="email" class="form-control" name="email" id="email1">
-        </div>
-        <div class="mb-3">
-            <label for="password1" class="form-label">Password</label>
-            <input type="password" class="form-control" name="password" id="password1">
-            <div id="passwordHelpBlock" class="form-text">
-                Your password must be 6-20 characters long, contain at least one number, at least one uppercase and one lowercase character, and at least one special symbol.
+    <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
+        <form action="/register" method="post">
+            <div class="mb-3">
+                <label for="username1" class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" id="username1"">
             </div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="password2" class="form-label">Password Confirmation</label>
-            <input type="password" class="form-control" name="password_confirmation" id="password2">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+            <div class="mb-3">
+                <label for="email1" class="form-label">Email address</label>
+                <input type="email" class="form-control" name="email" id="email1">
+            </div>
+            <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password1">
+                <div id="passwordHelpBlock" class="form-text">
+                    Your password must be 6-20 characters long, contain at least one number, at least one uppercase and one lowercase character, and at least one special symbol.
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password2" class="form-label">Password Confirmation</label>
+                <input type="password" class="form-control" name="password_confirmation" id="password2">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 {% endblock %}

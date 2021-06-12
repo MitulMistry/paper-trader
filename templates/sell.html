@@ -7,22 +7,24 @@
 {% block main %}
     <h1>Sell Shares</h1>
 
-    <form action="/sell" method="post">
-        <div class="mb-3">
-            <label for="symbol1" class="form-label">Stock to sell</label>
-            <select class="form-select" name="symbol" id="symbol1" aria-label="Stocks to sell">
-                <option disabled {% if not symbol %} selected {% endif %} value="">Symbol</option>
+    <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
+        <form action="/sell" method="post">
+            <div class="mb-3">
+                <label for="symbol1" class="form-label">Stock to sell</label>
+                <select class="form-select" name="symbol" id="symbol1" aria-label="Stocks to sell">
+                    <option disabled {% if not symbol %} selected {% endif %} value="">Symbol</option>
 
-                {% for stock in stocks %}
-                    <option value="{{ stock["symbol"] }}" {% if symbol == stock["symbol"] %} selected
-                    {% endif %}>{{ stock["symbol"] }}</option>
-                {% endfor %}
-            </select>
-          </div>
-        <div class="mb-3">
-            <label for="shares1" class="form-label">Number of shares to sell</label>
-            <input type="number" class="form-control" name="shares" id="shares1">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+                    {% for stock in stocks %}
+                        <option value="{{ stock["symbol"] }}" {% if symbol == stock["symbol"] %} selected
+                        {% endif %}>{{ stock["symbol"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="shares1" class="form-label">Number of shares to sell</label>
+                <input type="number" class="form-control" name="shares" id="shares1">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 {% endblock %}

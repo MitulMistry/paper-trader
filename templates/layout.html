@@ -8,15 +8,24 @@
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
+        <!-- Icon -->
+        <link href="/static/favicon.ico" rel="icon">
+
+        <!-- Custom CSS -->
+        <link href="/static/style.css" rel="stylesheet">
+
         <title>Paper Trader - {% block title %}{% endblock %}</title>
     </head>
 
     <body>       
 
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-pt-dark">
             <div class="container">
-                <a class="navbar-brand" href="/">Paper Trader</a>
+                <a class="navbar-brand" href="/">
+                    <img src="/static/pt_logo.svg" alt="logo" width="40" height="40">
+                    <strong>Paper</strong> Trader
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -46,7 +55,7 @@
                     </ul>
                     <form action="/quote" method="post" class="d-flex">
                         <input class="form-control me-2" type="search" placeholder="Enter stock symbol" name="symbol" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                        <button class="btn btn-primary" type="submit">Search</button>
                     </form>
                     {% if session.user_id %}
                         <ul class="navbar-nav d-flex mb-2 mb-lg-0">
@@ -60,6 +69,7 @@
         </nav>
 
         <!-- Flash Messages -->
+        <div class="container p-4">
         {% with messages = get_flashed_messages() %}
             {% if messages %}                            
                 {% for message in messages %}
@@ -75,6 +85,7 @@
                 {{ error }}
             </div>
         {% endif %}
+        </div>
 
         <!-- Body -->
         <main class="container p-5">

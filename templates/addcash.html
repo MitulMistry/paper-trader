@@ -7,15 +7,17 @@
 {% block main %}
     <h1>Add Cash to Account</h1>
 
-    <p>Current Cash: </p>
-    <form action="/addcash" method="post">
-        <div class="mb-3">
-            <label for="cash1" class="form-label">Amount of cash to add</label>
-            <input type="number" class="form-control" name="cash" id="cash1">
-            <div id="resetHelpBlock" class="form-text">
-                Your total cash in account cannot exceed $10,000,000.
+    <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
+        <p>Current Cash: {{ cash | usd }}</p>
+        <form action="/addcash" method="post">
+            <div class="mb-3">
+                <label for="cash1" class="form-label">Amount of cash to add</label>
+                <input type="number" class="form-control" name="cash" id="cash1">
+                <div id="resetHelpBlock" class="form-text">
+                    Your total cash in account cannot exceed $10,000,000.
+                </div>
             </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 {% endblock %}

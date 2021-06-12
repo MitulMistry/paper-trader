@@ -7,15 +7,17 @@
 {% block main %}
     <h1>Login</h1>
 
-    <form action="/login" method="post">
-        <div class="mb-3">
-            <label for="username1" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" id="username1"">
-        </div>
-        <div class="mb-3">
-            <label for="password1" class="form-label">Password</label>
-            <input type="password" class="form-control" name="password" id="password1">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
+        <form action="/login" method="post">
+            <div class="mb-3">
+                <label for="username1" class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" id="username1"">
+            </div>
+            <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password1">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 {% endblock %}

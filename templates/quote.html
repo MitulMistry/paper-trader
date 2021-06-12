@@ -7,26 +7,28 @@
 {% block main %}
     <h1>Quote</h1>
 
-    <p>
-        <span class="badge bg-secondary">{{ quote["symbol"] }}</span>
-        <strong>{{ quote["name"] }}</strong>
-    </p>
-    <p>{{ quote["price"] | usd }}</p>
-    <p>{{ quote["change"] | usd }} {{ quote["change_percent"] }}%</p>
-    {% if user_holding %}
-        <p>Currently holding: <strong>{{ user_holding["shares"] }} shares</strong></p>
-        <p>Cost of holdings: <strong>{{ user_holding["cost"] | usd }}</strong></p>
-        <p>Market value of holdings: <strong>{{ user_holding["value"] | usd }}</strong></p>
-        <p>Gain/loss: <strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
+    <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
         <p>
-            <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
-            <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-primary" role="button">Sell</a>
+            <span class="badge bg-secondary">{{ quote["symbol"] }}</span>
+            <strong>{{ quote["name"] }}</strong>
         </p>
-    {% elif logged_in %}
-        <p>
-            <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
-        </p>
-    {% endif %}
+        <p>{{ quote["price"] | usd }}</p>
+        <p>{{ quote["change"] | usd }} {{ quote["change_percent"] }}%</p>
+        {% if user_holding %}
+            <p>Currently holding: <strong>{{ user_holding["shares"] }} shares</strong></p>
+            <p>Cost of holdings: <strong>{{ user_holding["cost"] | usd }}</strong></p>
+            <p>Market value of holdings: <strong>{{ user_holding["value"] | usd }}</strong></p>
+            <p>Gain/loss: <strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
+            <p>
+                <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
+                <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-primary" role="button">Sell</a>
+            </p>
+        {% elif logged_in %}
+            <p>
+                <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
+            </p>
+        {% endif %}
+    </div>
 
     <h2>News</h2>
 
