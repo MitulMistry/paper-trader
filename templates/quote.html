@@ -12,12 +12,12 @@
         <strong>{{ quote["name"] }}</strong>
     </p>
     <p>{{ quote["price"] | usd }}</p>
-    <p>+$1.00 2.00% (TODO)</p>
+    <p>{{ quote["change"] | usd }} {{ quote["change_percent"] }}%</p>
     {% if user_holding %}
-        <p>Currently holding: <strong>{{ user_holding.shares }} shares</strong></p>
-        <p>Cost of holdings: <strong>{{ user_holding.cost | usd }}</strong></p>
-        <p>Market value of holdings: <strong>{{ user_holding.value | usd }}</strong></p>
-        <p>Gain/loss: <strong>{{ user_holding.gain_loss | usd }}</strong></p>
+        <p>Currently holding: <strong>{{ user_holding["shares"] }} shares</strong></p>
+        <p>Cost of holdings: <strong>{{ user_holding["cost"] | usd }}</strong></p>
+        <p>Market value of holdings: <strong>{{ user_holding["value"] | usd }}</strong></p>
+        <p>Gain/loss: <strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
         <p>
             <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
             <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-primary" role="button">Sell</a>
@@ -30,18 +30,20 @@
 
     <h2>News</h2>
 
+    {% for item in news_items %}
     <div class="card mb-3" style="max-width: 540px;">
         <div class="row g-0">
             <div class="col-md-4">
-                <a href="#"><img src="https://via.placeholder.com/350" width="100%" height="250" alt="..."></a>
+                <a href="#"><img src={{ item["url_to_image"] }} width="100%" height="250" alt="..."></a>
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="#">News Item</a></h5>
-                    <p class="card-text">Bunch of text</p>
-                    <p class="card-text"><small class="text-muted">Published: 06/09/2021</small></p>
+                    <h5 class="card-title"><a href={{ item["url"] }}>{{ item["title"] }}</a></h5>
+                    <p class="card-text">{{ item["description"] }}</p>
+                    <p class="card-text"><small class="text-muted">Published: {{ item["date"].strftime('%m/%d/%Y') }}</small></p>
                 </div>
             </div>
         </div>
     </div>
+    {% endfor %}
 {% endblock %}

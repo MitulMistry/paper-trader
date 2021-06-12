@@ -406,8 +406,8 @@ def quote_symbol(stock_symbol):
     if not quote:
         return render_template("index.html", error="Invalid symbol"), 400
 
-    # news_items = get_news(symbol)
-    news_items = []
+    news_items = get_news(symbol)
+    # news_items = []
 
     # Check if user is logged in, then check if they own the stock
     logged_in = False
