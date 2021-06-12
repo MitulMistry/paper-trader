@@ -12,15 +12,19 @@
         <strong>{{ quote["name"] }}</strong>
     </p>
     <p>{{ quote["price"] | usd }}</p>
-    <p>+$1.00 2.00%</p>
+    <p>+$1.00 2.00% (TODO)</p>
     {% if user_holding %}
         <p>Currently holding: <strong>{{ user_holding.shares }} shares</strong></p>
         <p>Cost of holdings: <strong>{{ user_holding.cost | usd }}</strong></p>
         <p>Market value of holdings: <strong>{{ user_holding.value | usd }}</strong></p>
-        <p>Gain/loss: <strong>+$100.00</strong></p>
+        <p>Gain/loss: <strong>{{ user_holding.gain_loss | usd }}</strong></p>
         <p>
             <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
             <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-primary" role="button">Sell</a>
+        </p>
+    {% elif logged_in %}
+        <p>
+            <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
         </p>
     {% endif %}
 

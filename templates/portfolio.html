@@ -14,18 +14,20 @@
             <th scope="col">Shares</th>
             <th scope="col">Cost Per Share</th>
             <th scope="col">Current Price</th>
+            <th scope="col">Total Cost</th>
             <th scope="col">Market Value</th>
             <th scope="col"></th>
         </thead>
         <tbody>
         {% for stock in stocks %}
             <tr>
-                <td>{{ stock["symbol"] }}</td>
+                <td><a href={{ "/quote/" + stock["symbol"] }}>{{ stock["symbol"] }}</a></td>
                 <td>{{ stock["name"] }}</td>
                 <td>{{ stock["shares"] }}</td>
-                <td>TODO</td>
+                <td>{{ stock["cost"] | usd }}</td>
                 <td>{{ stock["price"] | usd }}</td>
-                <td>{{ stock["total"] | usd }}</td>
+                <td>{{ stock["total_cost"] | usd }}</td>
+                <td>{{ stock["total_value"] | usd }}</td>
                 <td>
                     <a href={{ "/buy/" + stock["symbol"] }} class="btn btn-primary btn-sm" role="button">Buy</a>
                     <a href={{ "/sell/" + stock["symbol"] }} class="btn btn-primary btn-sm" role="button">Sell</a>

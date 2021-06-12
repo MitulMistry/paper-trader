@@ -410,34 +410,37 @@ def quote_symbol(stock_symbol):
     news_items = []
 
     # Check if user is logged in, then check if they own the stock
+    logged_in = False
     user_holding = None
-    if "user_id" in session.keys():        
+    if "user_id" in session.keys():
+        logged_in = True
         user = User.query.get(session["user_id"])
         holding = Holding.query.filter((Holding.user_id == user.id) & (Holding.symbol == quote["symbol"])).first()
         
-        value = holding.shares * float(quote["price"])
-        cost = 0
+        if holding is not None:
+            value = holding.shares * float(quote["price"])
+            cost = 0
 
-        # Calculate cost of all portfolio transactions
-        # If sold stock, will subtract since shares in transaction will be negative
-        transactions = Transaction.query.filter((Transaction.user_id == user.id) & (Transaction.symbol == quote["symbol"])).first()
+            # Calculate cost of all portfolio transactions
+            # If sold stock, will subtract since shares in transaction will be negative
+            transactions = Transaction.query.filter((Transaction.user_id == user.id) & (Transaction.symbol == quote["symbol"])).all()
 
-        # Check if there are multiple transactions
-        if type(transactions) is list:
-            for transaction in transactions:
-                cost += transaction.shares * transaction.price
-        # Otherwise, if transactions is not None, but not a list, must only be sinlge entry
-        elif transactions:
-            cost = transactions.shares * transactions.price
-        
-        user_holding = {
-            "shares": holding.shares,
-            "cost": cost,
-            "value": value,
-            "gain_loss": value - cost
-        }
+            # Check if there are multiple transactions (have to check for single item when using filter)
+            if type(transactions) is list:
+                for transaction in transactions:
+                    cost += transaction.shares * transaction.price
+            # Otherwise, if transactions is not None, but not a list, must only be sinlge entry
+            elif transactions:
+                cost = transactions.shares * transactions.price
+            
+            user_holding = {
+                "shares": holding.shares,
+                "cost": cost,
+                "value": value,
+                "gain_loss": value - cost
+            }
 
-    return render_template("quote.html", quote=quote, news_items=news_items, user_holding=user_holding)
+    return render_template("quote.html", quote=quote, news_items=news_items, logged_in=logged_in, user_holding=user_holding)
 
 
 @app.route("/portfolio")
@@ -448,7 +451,7 @@ def portfolio():
     # Query database for current user's stock holdings (portfolio)
     user = User.query.get(session["user_id"])
     holdings = user.holdings
-    stocks = [] # List of stock dicts
+    stocks = [] # List of stock dicts    
     transactions = user.transactions
 
     portfolio_cost = 0
@@ -462,11 +465,22 @@ def portfolio():
         stock["name"] = quote["name"]
         stock["price"] = quote["price"]
         stock["shares"] = holding.shares
-        stock["total"] = quote["price"] * holding.shares
+        stock["total_value"] = quote["price"] * holding.shares
+
+        # Calculate cost of shares (total price paid)
+        cost = 0
+        for transaction in transactions:
+            if transaction.symbol == stock["symbol"]:
+                cost += transaction.shares * transaction.price # Sold shares will be negative
+        
+        stock["cost"] = cost / holding.shares
+        stock["total_cost"] = cost
         stocks.append(stock) # Append stock dict to list of stocks
-        portfolio_value += stock["total"]
+        portfolio_value += stock["total_value"]
 
     # Calculate cost of all portfolio transactions
+    # Don't need to check for only single transaction since SQLAlchemy
+    # with relationship returns InstrumentedList   
     # If sold stock, will subtract since shares in transaction will be negative
     for transaction in transactions:
         portfolio_cost += transaction.shares * transaction.price
