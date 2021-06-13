@@ -21,7 +21,7 @@
                     <td><a href={{ "/quote/" + transaction["symbol"] }}><strong>{{ transaction["symbol"] }}</strong></a></td>
                     <td>{{ transaction["shares"] }}</td>
                     <td>{{ transaction["price"] | usd }}</td>
-                    <td>{{ transaction["timestamp"].strftime('%Y-%m-%d, %I:%M %p') }}</td>
+                    <td>{{ transaction["timestamp"].strftime('%m-%d-%Y, %I:%M %p') }}</td>
                 </tr>
             {% endfor %}
             </tbody>

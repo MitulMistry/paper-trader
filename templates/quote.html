@@ -8,25 +8,46 @@
     <h1>Quote</h1>
 
     <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
-        <p>
-            <span class="badge bg-secondary">{{ quote["symbol"] }}</span>
-            <strong>{{ quote["name"] }}</strong>
-        </p>
-        <p>{{ quote["price"] | usd }}</p>
-        <p>{{ quote["change"] | usd }} {{ quote["change_percent"] }}%</p>
+        <h4>
+            <span class="badge badge-stock">{{ quote["symbol"] }}</span>
+            <strong> &nbsp {{ quote["name"] }}</strong>
+        </h4>
+        <h2><strong>{{ quote["price"] | usd }}</strong></h2>
+        {% if quote["change"] > 0 %}
+            <h4 class="positive">
+                <i class="fas fa-caret-up"></i>
+                {{ quote["change"] | usd }} &nbsp {{ quote["change_percent"] }}%
+            </h4>
+        {% elif quote["change"] < 0 %}
+            <h4 class="negative">
+                <i class="fas fa-caret-down"></i>
+                {{ quote["change"] | usd }} &nbsp {{ quote["change_percent"] }}%
+            </h4>
+        {% else %}
+            <h4>{{ quote["change"] | usd }} &nbsp {{ quote["change_percent"] }}%</h4>
+        {% endif %}
+        
         {% if user_holding %}
-            <p>Currently holding: <strong>{{ user_holding["shares"] }} shares</strong></p>
-            <p>Cost of holdings: <strong>{{ user_holding["cost"] | usd }}</strong></p>
-            <p>Market value of holdings: <strong>{{ user_holding["value"] | usd }}</strong></p>
-            <p>Gain/loss: <strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
-            <p>
-                <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
-                <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-primary" role="button">Sell</a>
-            </p>
+            <div class="quote-block">
+                <p class="quote-text">Currently holding: <strong>{{ user_holding["shares"] }} shares</strong></p>
+                <p class="quote-text">Cost of holdings: <strong>{{ user_holding["cost"] | usd }}</strong></p>
+                <p class="quote-text">Market value of holdings: <strong>{{ user_holding["value"] | usd }}</strong></p>
+                {% if user_holding["gain_loss"] > 0 %}                    
+                    <p class="quote-text positive">Gain/loss: <i class="fas fa-caret-up"></i><strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
+                {% elif user_holding["gain_loss"] < 0 %}                    
+                    <p class="quote-text negative">Gain/loss: <i class="fas fa-caret-down"></i><strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
+                {% else %}
+                    <p class="quote-text">Gain/loss: <strong>{{ user_holding["gain_loss"] | usd }}</strong></p>
+                {% endif %}
+            </div>
+            <p class="quote-text">
+                <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-secondary" role="button">Buy</a>
+                <a href={{ "/sell/" + quote["symbol"] }} class="btn btn-secondary" role="button">Sell</a>
+            </p>            
         {% elif logged_in %}
-            <p>
-                <a href={{ "/buy/" + quote["symbol"] }} class="btn btn-primary" role="button">Buy</a>
-            </p>
+            <div class="quote-block">
+                <p><a href={{ "/buy/" + quote["symbol"] }} class="btn btn-secondary" role="button">Buy</a></p>
+            </div>
         {% endif %}
     </div>
 

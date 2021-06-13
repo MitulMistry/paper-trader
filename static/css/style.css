@@ -22,11 +22,11 @@ a:hover {
 }
 
 .bg-pt-dark {
-    background-color: #152A4C;
+    background-color: #152c50;
 }
 
 .bg-pt-dark2 {
-    background-color:#152A4C;
+    background-color:#152c50;
 }
 
 .navbar-dark .navbar-brand {
@@ -48,7 +48,7 @@ a:hover {
 
 .btn-primary {
     color: #CCD6F6;
-    background-color: #203f70;
+    background-color: #204580;
     border-color: #203f70;
 }
 
@@ -63,6 +63,8 @@ a:hover {
     color: #CCD6F6;
     background-color: #0A192F;
     border-color: #0A192F;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .btn-secondary:hover {
@@ -80,7 +82,15 @@ a:hover {
 .form-control:active, .form-control:focus {
     background-color: #0A192F;
     color: #CCD6F6;
-    border-color: #0A192F;
+    border-color: #57D9C1;
+}
+
+.form-control:focus {    
+    box-shadow: 0 0 0 .25rem rgba(37,134,245,.35);    
+}
+
+.form-control::placeholder { 
+    color: #767e94;
 }
 
 .form-text {
@@ -92,38 +102,62 @@ a:hover {
 }
 
 .negative {
-    color: #D95780;
+    color: #f64b81;
 }
 
 .alert-primary {
 	color: #CCD6F6;
     font-size: 1.2rem;
-	background-color: #0F7677;
-	border-color: #0F7677;
+	background-color: #0e8183;
+	border-color: #0e8183;
 }
 
 .alert-danger {
 	color: #CCD6F6;
     font-size: 1.2rem;
-	background-color: #66233A;
-	border-color: #66233A;
+	background-color: #7e2242;
+	border-color: #7e2242;
 }
 
 .table {
 	/* --bs-table-bg: transparent;
 	--bs-table-accent-bg: transparent; */
 	--bs-table-striped-color: #CCD6F6;
-	--bs-table-striped-bg: #213A62;
+	--bs-table-striped-bg: #223c66;
 	--bs-table-active-color: #CCD6F6;
-	--bs-table-active-bg: #213A62;
+	--bs-table-active-bg: #223c66;
 	--bs-table-hover-color: #CCD6F6;
-	--bs-table-hover-bg: #213A62;
+	--bs-table-hover-bg: #223c66;
 	color: #CCD6F6;
-	border-color: #213A62;
+	border-color: #223c66;
 }
 
 tbody, td, tfoot, th, thead, tr {
 	/* border-color: inherit; */
 	border-style: none;
 	/* border-width: 0; */
+}
+
+.card {
+    background-color: #152c50;
+}
+
+.text-muted {
+    color: #767e94 !important;
+}
+
+.quote-text {
+    font-size: 1.2rem;
+    margin-bottom: .25rem;
+}
+
+.quote-block {
+    margin-top: .5rem;
+    margin-bottom: 1rem;
+}
+
+.badge-stock {    
+    background-color: none;
+    border: 1px solid #CCD6F6;
+    margin-bottom: 6px;
 }

@@ -21,7 +21,7 @@
         <title>Paper Trader - {% block title %}{% endblock %}</title>
     </head>
 
-    <body>       
+    <body>
 
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-pt-dark">
@@ -55,7 +55,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/login">Login</a>
                             </li>
-                        {% endif %}                        
+                        {% endif %}
                     </ul>
                     <form action="/quote" method="post" class="d-flex">
                         <input class="form-control me-2" type="search" placeholder="Enter stock symbol" name="symbol" aria-label="Search">
@@ -75,9 +75,9 @@
         <!-- Flash Messages -->
         <div class="container p-4">
         {% with messages = get_flashed_messages() %}
-            {% if messages %}                            
+            {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-primary text-center" role="alert">  
+                    <div class="alert alert-primary text-center" role="alert">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -85,7 +85,7 @@
         {% endwith %}
 
         {% if error %}
-            <div class="alert alert-danger text-center" role="alert">  
+            <div class="alert alert-danger text-center" role="alert">
                 {{ error }}
             </div>
         {% endif %}
