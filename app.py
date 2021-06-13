@@ -38,14 +38,16 @@ if not os.environ.get("IEX_API_KEY"):
 if not os.environ.get("NEWS_API_KEY"):
     raise RuntimeError("NEWS_API_KEY not set")
 
+# Access API keys in routes
+# iex_key = app.config.get("IEX_KEY")
+# google_news_key = app.config.get("GOOGLE_NEWS_KEY")
+
 # Import models for SQLAlchemy
 from models import User, Holding, Transaction
 
 @app.route("/")
 def index():
     """Show website home page"""
-    # iex_key = app.config.get("IEX_KEY")
-    # google_news_key = app.config.get("GOOGLE_NEWS_KEY")
 
     return render_template("index.html")
 
@@ -76,7 +78,7 @@ def register():
 
         # Validate email uniqueness (doesn't already exist in database)
         if User.query.filter_by(email=request.form.get("email")).first() != None:
-            return render_template("register.html", error="Username is already taken"), 400
+            return render_template("register.html", error="Email is already taken"), 400
 
         # Validate password was submitted
         if not request.form.get("password"):
@@ -181,12 +183,68 @@ def update():
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # TODO
+
+        user = User.query.get(session["user_id"])
+        changes_made = False
+
+        # Check if username was submitted and isn't the same
+        if request.form.get("username") and request.form.get("username") != user.username:
+
+            # Validate username uniqueness (doesn't already exist in database)
+            if User.query.filter_by(username=request.form.get("username")).first() != None:
+                return render_template("update.html", user=user, error="Username is already taken"), 400
+
+            user.username = request.form.get("username")
+            changes_made = True
+
+        # Check if email was submitted and isn't the same
+        if request.form.get("email") and request.form.get("email") != user.email:
+
+            # Validate email structure
+            email_regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
+            if not re.search(email_regex, request.form.get("email")):
+                return render_template("update.html", user=user, error="Must provide valid email"), 400
+
+            # Validate email uniqueness (doesn't already exist in database)
+            if User.query.filter_by(email=request.form.get("email")).first() != None:
+                return render_template("update.html", user=user, error="Email is already taken"), 400
+
+            user.email = request.form.get("email")
+            changes_made = True
+
+        # Check if password was submitted
+        if request.form.get("password"):
+
+            # Validate password confirmation was submitted
+            if not request.form.get("password_confirmation"):
+                return render_template("update.html", user=user, error="Must provide password confirmation"), 400
+
+            # Validate password matches password confirmation
+            if request.form.get("password") != request.form.get("password_confirmation"):
+                return render_template("update.html", user=user, error="Password must match password confirmation"), 400
+
+            # Validate password structure
+            password_regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
+            if not re.search(password_regex, request.form.get("password")):
+                return render_template("update.html", user=user, error="Must provide password that follows the rules: At least one number, at least \
+                    one uppercase and one lowercase character, at least one special symbol, and be between 6 to 20 characters long."), 400
+
+            user.password_hash = generate_password_hash(request.form.get("password"))
+            changes_made = True
+
+        # Save changes to database (if changes made)
+        if changes_made:
+            db.session.commit()
+            flash("Account info updated")
+        else:
+            flash("No changes made")
+
         return redirect("/portfolio")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("update.html")
+        user = User.query.get(session["user_id"])
+        return render_template("update.html", user=user)
 
 
 @app.route("/delete", methods=["DELETE"])
@@ -391,10 +449,10 @@ def quote():
 
 @app.route("/quote/<string:stock_symbol>")
 def quote_symbol(stock_symbol):
-    """Get stock quote"""    
+    """Get stock quote"""
 
     # User reached route via GET (as by clicking a link or via redirect)
-    # Get stock symbol from URL, escape user input to ensure safety    
+    # Get stock symbol from URL, escape user input to ensure safety
     symbol = escape(stock_symbol)
 
     # Validate length and alphabetical nature of symbol string
@@ -407,7 +465,6 @@ def quote_symbol(stock_symbol):
         return render_template("index.html", error="Invalid symbol"), 400
 
     news_items = get_news(symbol)
-    # news_items = []
 
     # Check if user is logged in, then check if they own the stock
     logged_in = False
@@ -416,7 +473,7 @@ def quote_symbol(stock_symbol):
         logged_in = True
         user = User.query.get(session["user_id"])
         holding = Holding.query.filter((Holding.user_id == user.id) & (Holding.symbol == quote["symbol"])).first()
-        
+
         if holding is not None:
             value = holding.shares * float(quote["price"])
             cost = 0
@@ -432,7 +489,7 @@ def quote_symbol(stock_symbol):
             # Otherwise, if transactions is not None, but not a list, must only be sinlge entry
             elif transactions:
                 cost = transactions.shares * transactions.price
-            
+
             user_holding = {
                 "shares": holding.shares,
                 "cost": cost,
@@ -451,7 +508,7 @@ def portfolio():
     # Query database for current user's stock holdings (portfolio)
     user = User.query.get(session["user_id"])
     holdings = user.holdings
-    stocks = [] # List of stock dicts    
+    stocks = [] # List of stock dicts
     transactions = user.transactions
 
     portfolio_cost = 0
@@ -472,7 +529,7 @@ def portfolio():
         for transaction in transactions:
             if transaction.symbol == stock["symbol"]:
                 cost += transaction.shares * transaction.price # Sold shares will be negative
-        
+
         stock["cost"] = cost / holding.shares
         stock["total_cost"] = cost
         stocks.append(stock) # Append stock dict to list of stocks
@@ -480,7 +537,7 @@ def portfolio():
 
     # Calculate cost of all portfolio transactions
     # Don't need to check for only single transaction since SQLAlchemy
-    # with relationship returns InstrumentedList   
+    # with relationship returns InstrumentedList
     # If sold stock, will subtract since shares in transaction will be negative
     for transaction in transactions:
         portfolio_cost += transaction.shares * transaction.price
@@ -568,9 +625,9 @@ def reset():
 
         # Iterate through and delete user's holdings
         holdings = user.holdings
-        for holding in holdings:            
+        for holding in holdings:
             db.session.delete(holding)
-        
+
         # Iterate through and delete user's transactions
         transactions = user.transactions
         for transaction in transactions:

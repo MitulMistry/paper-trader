@@ -8,14 +8,14 @@
     <h1>Update</h1>
 
     <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
-        <form action="/register" method="post">
+        <form action="/update" method="post">
             <div class="mb-3">
                 <label for="username1" class="form-label">Username</label>
-                <input type="text" class="form-control" name="username" id="username1"">
+                <input type="text" class="form-control" name="username" id="username1" value={{ user.username }}>
             </div>
             <div class="mb-3">
                 <label for="email1" class="form-label">Email address</label>
-                <input type="email" class="form-control" name="email" id="email1">
+                <input type="email" class="form-control" name="email" id="email1" value={{ user.email }}>
             </div>
             <div class="mb-3">
                 <label for="password1" class="form-label">Password</label>
