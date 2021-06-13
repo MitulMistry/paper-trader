@@ -8,23 +8,25 @@
     <h1>Transaction History</h1>
 
     <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
-        <table class="table table-striped">
-            <thead>
-                <th scope="col">Symbol</th>
-                <th scope="col">Shares</th>
-                <th scope="col">Price</th>
-                <th scope="col">Date</th>
-            </thead>
-            <tbody>
-            {% for transaction in transactions %}
-                <tr>
-                    <td><a href={{ "/quote/" + transaction["symbol"] }}><strong>{{ transaction["symbol"] }}</strong></a></td>
-                    <td>{{ transaction["shares"] }}</td>
-                    <td>{{ transaction["price"] | usd }}</td>
-                    <td>{{ transaction["timestamp"].strftime('%m-%d-%Y, %I:%M %p') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Shares</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Date</th>
+                </thead>
+                <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td><a href={{ "/quote/" + transaction["symbol"] }}><strong>{{ transaction["symbol"] }}</strong></a></td>
+                        <td>{{ transaction["shares"] }}</td>
+                        <td>{{ transaction["price"] | usd }}</td>
+                        <td>{{ transaction["timestamp"].strftime('%m-%d-%Y, %I:%M %p') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

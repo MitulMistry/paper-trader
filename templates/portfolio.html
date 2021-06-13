@@ -8,80 +8,83 @@
     <h1>Your Portfolio</h1>
 
     <div class="p-5 mb-4 bg-pt-dark2 rounded-3">
-        <table class="table table-striped">
-            <thead>
-                <th scope="col">Symbol</th>
-                <th scope="col">Name</th>
-                <th scope="col">Shares</th>
-                <th scope="col">Cost Per Share</th>
-                <th scope="col">Current Price</th>
-                <th scope="col">Total Cost</th>
-                <th scope="col">Market Value</th>
-                <th scope="col"></th>
-            </thead>
-            <tbody>
-            {% for stock in stocks %}
-                <tr>
-                    <td><a href={{ "/quote/" + stock["symbol"] }}><strong>{{ stock["symbol"] }}</strong></a></td>
-                    <td>{{ stock["name"] }}</td>
-                    <td>{{ stock["shares"] }}</td>
-                    <td>{{ stock["cost"] | usd }}</td>
-                    <td>{{ stock["price"] | usd }}</td>
-                    <td>{{ stock["total_cost"] | usd }}</td>
-                    {% if stock["total_value"] > stock["total_cost"] %}
-                        <td class="positive">
-                            {{ stock["total_value"] | usd }}
-                            <i class="fas fa-caret-up"></i>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Shares</th>
+                    <th scope="col">Cost Per Share</th>
+                    <th scope="col">Current Price</th>
+                    <th scope="col">Total Cost</th>
+                    <th scope="col">Market Value</th>
+                    <th scope="col"></th>
+                </thead>
+                <tbody>
+                {% for stock in stocks %}
+                    <tr>
+                        <td><a href={{ "/quote/" + stock["symbol"] }}><strong>{{ stock["symbol"] }}</strong></a></td>
+                        <td>{{ stock["name"] }}</td>
+                        <td>{{ stock["shares"] }}</td>
+                        <td>{{ stock["cost"] | usd }}</td>
+                        <td>{{ stock["price"] | usd }}</td>
+                        <td>{{ stock["total_cost"] | usd }}</td>
+                        {% if stock["total_value"] > stock["total_cost"] %}
+                            <td class="positive">
+                                {{ stock["total_value"] | usd }}
+                                <i class="fas fa-caret-up"></i>
+                            </td>
+                        {% elif stock["total_cost"] > stock["total_value"] %}
+                            <td class="negative">
+                                {{ stock["total_value"] | usd }}
+                                <i class="fas fa-caret-down"></i>
+                            </td>
+                        {% else %}
+                            <td>{{ stock["total_value"] | usd }}</td>
+                        {% endif %}
+                        <td>
+                            <a href={{ "/buy/" + stock["symbol"] }} class="btn btn-secondary btn-sm" role="button">Buy</a>
+                            <a href={{ "/sell/" + stock["symbol"] }} class="btn btn-secondary btn-sm" role="button">Sell</a>
                         </td>
-                    {% elif stock["total_cost"] > stock["total_value"] %}
-                        <td class="negative">
-                            {{ stock["total_value"] | usd }}
-                            <i class="fas fa-caret-down"></i>
-                        </td>
-                    {% else %}
-                        <td>{{ stock["total_value"] | usd }}</td>
-                    {% endif %}
-                    <td>
-                        <a href={{ "/buy/" + stock["symbol"] }} class="btn btn-secondary btn-sm" role="button">Buy</a>
-                        <a href={{ "/sell/" + stock["symbol"] }} class="btn btn-secondary btn-sm" role="button">Sell</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="container">
             <div class="row">
             <div class="col">
             </div>
             <div class="col-8">
-                <table class="table">
-                    <thead>
-                        <th scope="col">Available Cash</th>
-                        <th scope="col">Total Portfolio Cost</th>
-                        <th scope="col">Current Portfolio Value</th>
-                        <th scope="col">Gain/Loss</th>
-                    </thead>
-                    <tbody>
-                        <td>{{ user_info["cash"] | usd }}</td>
-                        <td>{{ user_info["portfolio_cost"] | usd }}</td>
-                        <td>{{ user_info["portfolio_value"] | usd }}</td>
-                        {% if user_info["gain_loss"] > 0 %}
-                            <td class="positive">
-                                <i class="fas fa-caret-up"></i>
-                                {{ user_info["gain_loss"] | usd }}
-                            </td>
-                        {% elif user_info["gain_loss"] < 0 %}
-                            <td class="negative">
-                                <i class="fas fa-caret-down"></i>
-                                {{ user_info["gain_loss"] | usd }}
-                            </td>
-                        {% else %}
-                            <td>{{ user_info["gain_loss"] | usd }}</td>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <th scope="col">Available Cash</th>
+                            <th scope="col">Total Portfolio Cost</th>
+                            <th scope="col">Current Portfolio Value</th>
+                            <th scope="col">Gain/Loss</th>
+                        </thead>
+                        <tbody>
+                            <td>{{ user_info["cash"] | usd }}</td>
+                            <td>{{ user_info["portfolio_cost"] | usd }}</td>
+                            <td>{{ user_info["portfolio_value"] | usd }}</td>
+                            {% if user_info["gain_loss"] > 0 %}
+                                <td class="positive">
+                                    <i class="fas fa-caret-up"></i>
+                                    {{ user_info["gain_loss"] | usd }}
+                                </td>
+                            {% elif user_info["gain_loss"] < 0 %}
+                                <td class="negative">
+                                    <i class="fas fa-caret-down"></i>
+                                    {{ user_info["gain_loss"] | usd }}
+                                </td>
+                            {% else %}
+                                <td>{{ user_info["gain_loss"] | usd }}</td>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
