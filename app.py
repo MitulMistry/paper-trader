@@ -463,9 +463,9 @@ def portfolio():
         stock = {}
         stock["symbol"] = holding.symbol
         stock["name"] = quote["name"]
-        stock["price"] = quote["price"]
-        stock["shares"] = holding.shares
-        stock["total_value"] = quote["price"] * holding.shares
+        stock["price"] = float(quote["price"])
+        stock["shares"] = int(holding.shares)
+        stock["total_value"] = float(quote["price"]) * int(holding.shares)
 
         # Calculate cost of shares (total price paid)
         cost = 0

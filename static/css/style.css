@@ -87,6 +87,14 @@ a:hover {
     color: #b1bad6;
 }
 
+.positive {
+    color: #57D9C1;
+}
+
+.negative {
+    color: #D95780;
+}
+
 .alert-primary {
 	color: #CCD6F6;
     font-size: 1.2rem;
