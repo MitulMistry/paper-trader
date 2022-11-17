@@ -14,7 +14,7 @@ Users can see their holdings on a stock's quote page if they own shares in it. T
 ## Install Instructions
 The application depends on Python, which can be installed and managed a variety of ways. For this project, I used [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), following [this guide](https://realpython.com/intro-to-pyenv/).
 
-Once Python is installed, install [Flask](https://flask.palletsprojects.com/en/2.0.x/installation/) and dependencies using the command: `pip install -r requirement.txt` or `python -m pip install -r requirement.txt`.
+Once Python is installed, install [Flask](https://flask.palletsprojects.com/en/2.0.x/installation/) and dependencies using the command: `pip install -r requirements.txt` or `python -m pip install -r requirements.txt`.
 
 API keys for [IEX](https://iexcloud.io/) and [News API](https://newsapi.org/) are required to run the application. They can be acquired from the previous links. You also need to set up a [PostgreSQL database](https://www.postgresql.org/docs/12/tutorial-createdb.html).
 
