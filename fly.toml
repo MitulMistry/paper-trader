@@ -8,6 +8,9 @@ processes = []
 [build]
   dockerfile = "Dockerfile"
 
+[deploy]
+  release_command = "python -m flask db upgrade"
+
 [env]
   PORT = "8080"
 

@@ -4,7 +4,7 @@ A paper trading web application to practice trading stocks, built with [Flask](h
 ![screenshot](readme_paper_trader.png)
 
 ## Demo App
-You can see a demo version of the application deployed to Heroku here: https://flask-paper-trader.herokuapp.com/
+You can see a demo version of the application deployed to Heroku here: https://paper-trader-py.fly.dev/
 
 ## Functionality
 Users can create an account and search for stock quotes for companies as well as get recent news articles regarding the stock. Users can practice buying and selling stocks based on a set amount of money they define at account creation and track their hypothetical gains and losses.
@@ -31,7 +31,7 @@ Insert the url for the Postgresql database in the quotes after DATABASE_URL. Ins
 
 Run migrations with the command `flask db upgrade` or `python -m flask db upgrade`. Then run either `flask run` or `python -m flask run` to start the development server.
 
-For production, the application uses [Gunicorn](https://gunicorn.org/) for the server as defined in the [Procfile](/Procfile) (for [Heroku](https://www.heroku.com/) deployment).
+For production, the application uses [Gunicorn](https://gunicorn.org/) for the server as defined in the [Procfile](/Procfile) (for [Fly.io](https://fly.io) deployment).
 
 ## Project Structure
 [`app.py`](/app.py) - Application (controller) logic is defined here. All routes are processed and requests are responded to.
@@ -50,7 +50,7 @@ For production, the application uses [Gunicorn](https://gunicorn.org/) for the s
 
 [`Procfile`](/Procfile) - Configuration for Heroku production deployment is stored here (which is set up to use [Gunicorn](https://gunicorn.org/)).
 
-`.env` - You can store environment variables like FLASK_APP, FLASK_ENV, DATABASE_URL, IEX_KEY, GOOGLE_NEWS_KEY here (not commited to Git). If doing so, it needs to be configured using [Python-dotenv](https://github.com/theskumar/python-dotenv) or [direnv](https://github.com/direnv/direnv).
+`.env` - You can store environment variables like FLASK_APP, FLASK_ENV, DATABASE_URL, IEX_API_KEY, NEWS_API_KEY here (not commited to Git). If doing so, it needs to be configured using [Python-dotenv](https://github.com/theskumar/python-dotenv) or [direnv](https://github.com/direnv/direnv).
 
 ## More Info
 This application began as the final project for Harvard's CS50x Computer Science course:

@@ -9,6 +9,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from markupsafe import escape
 import re
 from datetime import datetime
+import warnings
 
 from helpers import login_required, lookup, get_news, usd
 
@@ -33,14 +34,16 @@ Session(app)
 
 # Make sure API keys are set
 if not os.environ.get("IEX_API_KEY"):
-    raise RuntimeError("IEX_API_KEY not set")
+    warnings.warn("IEX_API_KEY not set")
+    # raise RuntimeError("IEX_API_KEY not set")
 
 if not os.environ.get("NEWS_API_KEY"):
-    raise RuntimeError("NEWS_API_KEY not set")
+    warnings.warn("NEWS_API_KEY not set")
+    # raise RuntimeError("NEWS_API_KEY not set")
 
 # Access API keys in routes
-# iex_key = app.config.get("IEX_KEY")
-# google_news_key = app.config.get("GOOGLE_NEWS_KEY")
+# IEX_API_KEY = app.config.get("IEX_API_KEY")
+# NEWS_API_KEY = app.config.get("NEWS_API_KEY")
 
 # Import models for SQLAlchemy
 from models import User, Holding, Transaction
