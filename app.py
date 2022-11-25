@@ -1,17 +1,25 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
+# from flask.sessions import SecureCookieSessionInterface
 from tempfile import mkdtemp
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from markupsafe import escape
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 import warnings
 
 from helpers import login_required, lookup, get_news, usd
+
+# Subclass SQLAlchemy to fix psycopg2 operational error on deployment
+# https://stackoverflow.com/questions/55457069/how-to-fix-operationalerror-psycopg2-operationalerror-server-closed-the-conn
+class SQLAlchemy(_BaseSQLAlchemy):
+    def apply_pool_defaults(self, app, options):
+        super(SQLAlchemy, self).apply_pool_defaults(self, app, options)
+        options["pool_pre_ping"] = True
 
 # Configure application
 app = Flask(__name__)
@@ -27,10 +35,33 @@ migrate = Migrate(app, db)
 app.jinja_env.filters["usd"] = usd
 
 # Configure session to use filesystem (instead of signed cookies)
-app.config["SESSION_FILE_DIR"] = mkdtemp()
+# app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+app.config["SESSION_TYPE"] = "sqlalchemy"
+# URI to connect to the database. postgresql:// uses psycopg2, see the documentation
+# app.config["SESSION_SQLALCHEMY"] = app.config.get("SQLALCHEMY_DATABASE_URI")
+app.app_context().push()
+app.config["SESSION_SQLALCHEMY"] = db
+# What table in the database to use, default is "sessions"
+# app.config["SESSION_SQLALCHEMY_TABLE"] = "sessions"
+# app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SESSION_COOKIE_SECURE"] = "True"
+# session_cookie = SecureCookieSessionInterface().get_signing_serializer(app)
+session = Session(app)
+session.app.session_interface.db.create_all()
+# assuming you have already have a Flask instance, an SQLAlchemy instance, and a Session instance:
+# app.session_interface.sql_session_model.__table__.create(bind = db.session.bind)
+
+# app.config.update(
+#     SESSION_SQLALCHEMY = db
+#     # SESSION_COOKIE_SAMESITE="None",
+#     # SESSION_COOKIE_SECURE="True"
+# )
+
+# app.session_interface.sql_session_model.__table__.create(bind = db.session.bind)
+
+
 
 # Make sure API keys are set
 if not os.environ.get("IEX_API_KEY"):
@@ -47,6 +78,33 @@ if not os.environ.get("NEWS_API_KEY"):
 
 # Import models for SQLAlchemy
 from models import User, Holding, Transaction
+
+# @app.after_request
+# def cookies(response):
+#     if session_cookie is not None:
+#         same_cookie = session_cookie.dumps(dict(session))
+#         response.headers.add("Set-Cookie", f"my_cookie={same_cookie}; Secure; HttpOnly; SameSite=None; Path=/;")
+    
+#     return response
+
+# @app.after_request
+# def cookies(response):
+#     if session_cookie is not None:
+#         same_cookie = session_cookie.dumps(dict(session))
+#         response.headers.add("Set-Cookie", f"my_cookie={same_cookie}; Secure; HttpOnly; SameSite=None; Path=/;")
+    
+#     return response
+
+# @app.before_request
+# def before_request():
+#     session.permanent = True
+#     app.permanent_session_lifetime = timedelta(minutes=60)
+#     session.modified = True
+
+# @app.after_request
+# def after_request():
+#     session.SameSite = "None"
+#     session.secure = "True"
 
 @app.route("/")
 def index():
