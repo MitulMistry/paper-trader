@@ -161,3 +161,7 @@ tbody, td, tfoot, th, thead, tr {
     border: 1px solid #CCD6F6;
     margin-bottom: 6px;
 }
+
+footer {
+    padding-bottom: 2rem;
+}

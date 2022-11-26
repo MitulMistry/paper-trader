@@ -1,10 +1,11 @@
 from app import db
+from flask_login import UserMixin
 from datetime import datetime
 
 # Models used to translate into database schema using Flask-SQLAlchemy (ORM)
 # User has many Holdings, and User has many Transactions (One-to-Many relationships)
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     # Set table name in database (override default)
     __tablename__ = "users"
 

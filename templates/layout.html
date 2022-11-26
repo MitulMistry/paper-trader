@@ -35,7 +35,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        {% if session.user_id %}
+                        {% if current_user.is_authenticated %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/buy">Buy</a>
                             </li>
@@ -61,7 +61,7 @@
                         <input class="form-control me-2" type="search" placeholder="Enter stock symbol" name="symbol" aria-label="Search">
                         <button class="btn btn-primary" type="submit">Search</button>
                     </form>
-                    {% if session.user_id %}
+                    {% if current_user.is_authenticated %}
                         <ul class="navbar-nav d-flex mb-2 mb-lg-0">
                             <li class="nav-item">
                                 <a class="nav-link" href="/logout">Logout</a>
@@ -98,7 +98,7 @@
 
         <!-- Footer -->
         <footer class="text-center">
-            Website &copy; Copyright Mitul Mistry 2021<br />
+            Website &copy; Copyright Mitul Mistry {{ now.year }}<br />
             All other materials copyright their respective holders <br />
             Data provided for free by <a href="https://iextrading.com/developer" target="_blank">IEX</a>. View <a href="https://iextrading.com/api-exhibit-a/" target="_blank">IEX’s Terms of Use</a><br />
             Powered by <a href="https://newsapi.org/" target="_blank">News API</a> -

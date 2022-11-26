@@ -1,18 +1,23 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session
-from flask_session import Session
-# from flask.sessions import SecureCookieSessionInterface
-from tempfile import mkdtemp
 from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from markupsafe import escape
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 import warnings
 
-from helpers import login_required, lookup, get_news, usd
+from flask_login import (
+    login_user,
+    LoginManager,
+    current_user,
+    logout_user,
+    login_required,
+)
+
+from helpers import lookup, get_news, usd
 
 # Subclass SQLAlchemy to fix psycopg2 operational error on deployment
 # https://stackoverflow.com/questions/55457069/how-to-fix-operationalerror-psycopg2-operationalerror-server-closed-the-conn
@@ -34,34 +39,12 @@ migrate = Migrate(app, db)
 # Custom filter
 app.jinja_env.filters["usd"] = usd
 
-# Configure session to use filesystem (instead of signed cookies)
-# app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "sqlalchemy"
-# URI to connect to the database. postgresql:// uses psycopg2, see the documentation
-# app.config["SESSION_SQLALCHEMY"] = app.config.get("SQLALCHEMY_DATABASE_URI")
-app.app_context().push()
-app.config["SESSION_SQLALCHEMY"] = db
-# What table in the database to use, default is "sessions"
-# app.config["SESSION_SQLALCHEMY_TABLE"] = "sessions"
-# app.config["SESSION_TYPE"] = "filesystem"
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = "True"
-# session_cookie = SecureCookieSessionInterface().get_signing_serializer(app)
-session = Session(app)
-session.app.session_interface.db.create_all()
-# assuming you have already have a Flask instance, an SQLAlchemy instance, and a Session instance:
-# app.session_interface.sql_session_model.__table__.create(bind = db.session.bind)
-
-# app.config.update(
-#     SESSION_SQLALCHEMY = db
-#     # SESSION_COOKIE_SAMESITE="None",
-#     # SESSION_COOKIE_SECURE="True"
-# )
-
-# app.session_interface.sql_session_model.__table__.create(bind = db.session.bind)
-
-
+# Flask-Login setup (for sessions)
+login_manager = LoginManager()
+login_manager.session_protection = "strong"
+login_manager.login_view = "login"
+login_manager.login_message_category = "info"
+login_manager.init_app(app)
 
 # Make sure API keys are set
 if not os.environ.get("IEX_API_KEY"):
@@ -79,32 +62,15 @@ if not os.environ.get("NEWS_API_KEY"):
 # Import models for SQLAlchemy
 from models import User, Holding, Transaction
 
-# @app.after_request
-# def cookies(response):
-#     if session_cookie is not None:
-#         same_cookie = session_cookie.dumps(dict(session))
-#         response.headers.add("Set-Cookie", f"my_cookie={same_cookie}; Secure; HttpOnly; SameSite=None; Path=/;")
-    
-#     return response
+# Set up user loader for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-# @app.after_request
-# def cookies(response):
-#     if session_cookie is not None:
-#         same_cookie = session_cookie.dumps(dict(session))
-#         response.headers.add("Set-Cookie", f"my_cookie={same_cookie}; Secure; HttpOnly; SameSite=None; Path=/;")
-    
-#     return response
-
-# @app.before_request
-# def before_request():
-#     session.permanent = True
-#     app.permanent_session_lifetime = timedelta(minutes=60)
-#     session.modified = True
-
-# @app.after_request
-# def after_request():
-#     session.SameSite = "None"
-#     session.secure = "True"
+# Inject current date and time into routes (for copyright year)
+@app.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
 
 @app.route("/")
 def index():
@@ -178,7 +144,8 @@ def register():
         db.session.commit()
 
         # Remember which user has logged in
-        session["user_id"] = User.query.filter_by(username=request.form.get("username")).first().id
+        user = User.query.filter_by(username=new_user.username).first()
+        login_user(user)
 
         # Redirect user to their portfolio
         flash("Account successfully created")
@@ -194,7 +161,7 @@ def login():
     """Log user in and create session"""
 
     # Forget any user_id
-    session.clear()
+    logout_user()
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -215,7 +182,7 @@ def login():
             return render_template("login.html", error="Invalid username and/or password"), 403
 
         # Remember which user has logged in
-        session["user_id"] = user.id
+        login_user(user)
 
         flash("Logged in as " + user.username)
         return redirect("/portfolio")
@@ -231,7 +198,7 @@ def logout():
     """Log user out and clear session"""
 
     # Forget any user_id
-    session.clear()
+    logout_user()
 
     flash("Logged out")
     return redirect("/")
@@ -245,7 +212,7 @@ def update():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        user = User.query.get(session["user_id"])
+        user = current_user
         changes_made = False
 
         # Check if username was submitted and isn't the same
@@ -304,7 +271,7 @@ def update():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        user = User.query.get(session["user_id"])
+        user = current_user
         return render_template("update.html", user=user)
 
 
@@ -313,7 +280,7 @@ def update():
 def delete():
     """Delete user account"""
 
-    user = User.query.get(session["user_id"])
+    user = current_user
 
     db.session.delete(user)
     db.session.delete(user.holdings)
@@ -355,7 +322,7 @@ def buy():
             return render_template("buy.html", error="Share bought must be greater than zero"), 400
 
         # Check if user has enough money to complete purchase of shares
-        user = User.query.get(session["user_id"])
+        user = current_user
 
         if quote["price"] * int(request.form.get("shares")) > user.cash:
             return render_template("buy.html", error="Not enough cash to complete purchase"), 400
@@ -439,7 +406,7 @@ def sell():
             return render_template("sell.html", error="share sold must be greater than zero"), 400
 
         # Query database to find stock in user's holdings
-        user = User.query.get(session["user_id"])
+        user = current_user
         holding = Holding.query.filter((Holding.user_id==user.id) & (Holding.symbol==quote["symbol"])).first()
 
         # Check if user owns shares of stock user wants to sell
@@ -479,7 +446,7 @@ def sell():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        user = User.query.get(session["user_id"])
+        user = current_user
         stocks = user.holdings
 
         return render_template("sell.html", stocks=stocks)
@@ -488,7 +455,7 @@ def sell():
 @app.route("/sell/<string:symbol>")
 @login_required
 def sell_symbol(symbol):
-    user = User.query.get(session["user_id"])
+    user = current_user
     stocks = user.holdings
 
     return render_template("sell.html", stocks=stocks, symbol=escape(symbol))
@@ -530,9 +497,9 @@ def quote_symbol(stock_symbol):
     # Check if user is logged in, then check if they own the stock
     logged_in = False
     user_holding = None
-    if "user_id" in session.keys():
+    if not current_user.is_anonymous:
         logged_in = True
-        user = User.query.get(session["user_id"])
+        user = current_user
         holding = Holding.query.filter((Holding.user_id == user.id) & (Holding.symbol == quote["symbol"])).first()
 
         if holding is not None:
@@ -567,7 +534,7 @@ def portfolio():
     """Show portfolio of user's stock holdings"""
 
     # Query database for current user's stock holdings (portfolio)
-    user = User.query.get(session["user_id"])
+    user = current_user
     holdings = user.holdings
     stocks = [] # List of stock dicts
     transactions = user.transactions
@@ -620,7 +587,7 @@ def history():
     """Show history of user's transactions"""
 
     # Query database for all transactions made by current user
-    user = User.query.get(session["user_id"])
+    user = current_user
     transactions = user.transactions
 
     return render_template("history.html", transactions=transactions)
@@ -643,7 +610,7 @@ def addcash():
             return render_template("addcash.html", error="Must provide valid cash amount to add (between $1 and $10,000,000)"), 400
 
         # Validate account doesn't already have too much cash (> $10,000,000)
-        user = User.query.get(session["user_id"])
+        user = current_user
 
         if (user.cash >= 10000000):
             return render_template("addcash.html", error="Account already has too much cash ($10,000,000 or more)"), 400
@@ -660,7 +627,7 @@ def addcash():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        user = User.query.get(session["user_id"])
+        user = current_user
         return render_template("addcash.html", cash=user.cash)
 
 
@@ -680,7 +647,7 @@ def reset():
         if not (request.form.get("cash").isdigit() and int(request.form.get("cash")) >= 100 and int(request.form.get("cash")) <= 10000000):
             return render_template("register.html", error="Must provide valid starting cash amount (between $100 and $10,000,000)"), 400
 
-        user = User.query.get(session["user_id"])
+        user = current_user
 
         user.cash = int(request.form.get("cash"))
 

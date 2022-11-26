@@ -23,11 +23,12 @@ To run the application in development mode, configure Flask by entering the foll
 ```
 export FLASK_APP=app.py
 export FLASK_ENV=development
+export SECRET_KEY=""
 export DATABASE_URL=""
 export IEX_API_KEY=""
 export NEWS_API_KEY=""
 ```
-Insert the url for the Postgresql database in the quotes after DATABASE_URL. Insert the News API and IEX API keys in their respective spots as well (after registering for accounts).
+Insert the url for the Postgresql database in the quotes after DATABASE_URL. Generate a secret key using a tool of your choice and insert it. Insert the News API and IEX API keys in their respective spots as well (after registering for accounts).
 
 Run migrations with the command `flask db upgrade` or `python -m flask db upgrade`. Then run either `flask run` or `python -m flask run` to start the development server.
 
