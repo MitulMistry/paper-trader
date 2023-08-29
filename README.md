@@ -16,7 +16,7 @@ The application depends on Python, which can be installed and managed a variety 
 
 Once Python is installed, install [Flask](https://flask.palletsprojects.com/en/2.0.x/installation/) and dependencies using the command: `pip install -r requirements.txt` or `python -m pip install -r requirements.txt`.
 
-API keys for [IEX](https://iexcloud.io/) and [News API](https://newsapi.org/) are required to run the application. They can be acquired from the previous links. You also need to set up a [PostgreSQL database](https://www.postgresql.org/docs/12/tutorial-createdb.html).
+An API key for [News API](https://newsapi.org/) is required to run the application. It can be acquired from the previous link. Stock data is queried from the Yahoo Finance API which does not require a key. You also need to set up a [PostgreSQL database](https://www.postgresql.org/docs/12/tutorial-createdb.html).
 
 To run the application in development mode, configure Flask by entering the following commands in the application directory:
 
@@ -25,10 +25,9 @@ export FLASK_APP=app.py
 export FLASK_ENV=development
 export SECRET_KEY=""
 export DATABASE_URL=""
-export IEX_API_KEY=""
 export NEWS_API_KEY=""
 ```
-Insert the url for the Postgresql database in the quotes after DATABASE_URL. Generate a secret key using a tool of your choice and insert it. Insert the News API and IEX API keys in their respective spots as well (after registering for accounts).
+Insert the url for the Postgresql database in the quotes after DATABASE_URL. Generate a secret key using a tool of your choice and insert it. Insert the News API key in its respective spot as well (after registering for an account).
 
 Run migrations with the command `flask db upgrade` or `python -m flask db upgrade`. Then run either `flask run` or `python -m flask run` to start the development server.
 
@@ -51,7 +50,7 @@ For production, the application uses [Gunicorn](https://gunicorn.org/) for the s
 
 [`Procfile`](/Procfile) - Configuration for Heroku production deployment is stored here (which is set up to use [Gunicorn](https://gunicorn.org/)).
 
-`.env` - You can store environment variables like FLASK_APP, FLASK_ENV, DATABASE_URL, IEX_API_KEY, NEWS_API_KEY here (not commited to Git). If doing so, it needs to be configured using [Python-dotenv](https://github.com/theskumar/python-dotenv) or [direnv](https://github.com/direnv/direnv).
+`.env` - You can store environment variables like FLASK_APP, FLASK_ENV, DATABASE_URL, NEWS_API_KEY here (not commited to Git). If doing so, it needs to be configured using [Python-dotenv](https://github.com/theskumar/python-dotenv) or [direnv](https://github.com/direnv/direnv).
 
 ## More Info
 This application began as the final project for Harvard's CS50x Computer Science course:
